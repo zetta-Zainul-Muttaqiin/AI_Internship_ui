@@ -27,8 +27,6 @@ if "education" not in st.session_state:
 if "duration" not in st.session_state:
     st.session_state.duration = ""
 
-st.write(st.session_state)
-
 st.title("LeBon Stage")
 
 # File uploader
