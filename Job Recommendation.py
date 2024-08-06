@@ -130,7 +130,7 @@ if ('data' in st.session_state.results) or ('data_recommend' in st.session_state
                 'description': desc,
                 'job_role': job_role
                 }
-            st.page_link('pages/cv_editor_ui.py', label=f"Apply as {job_role}")
+            st.page_link('pages/CV_Upload.py.py', label=f"Apply as {job_role}")
 
 
     if len(df) < 5:
@@ -170,4 +170,4 @@ if ('data' in st.session_state.results) or ('data_recommend' in st.session_state
                     'description': desc,
                     'job_role': job_role
                     }
-                st.page_link('pages/cv_editor_ui.py', label=f"Apply as {job_role}")
+                st.page_link('pages/CV_Upload.py.py', label=f"Apply as {job_role}")
