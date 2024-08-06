@@ -15,14 +15,13 @@ LOGGER.info("Init Global Variable")
 load_dotenv()
 
 # ********* set token for openai and datastax
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-# api_key = st.secrets["api"]
+api_key = st.secrets["api"]
 # ********* set token for openai and datastax
-# OPENAI_API_KEY = os.getenv("openai_api_key")
-ASTRADB_API_ENDPOINT= os.getenv("ASTRADB_API_ENDPOINT")
-ASTRADB_NAMESPACE_NAME= os.getenv("ASTRADB_NAMESPACE_NAME")
-ASTRADB_COLLECTION_NAME= os.getenv("ASTRADB_COLLECTION_NAME")
-ASTRADB_TOKEN_KEY= os.getenv("ASTRADB_TOKEN_KEY")
+OPENAI_API_KEY = api_key["openai_api_key"]
+ASTRADB_API_ENDPOINT= api_key["ASTRADB_API_ENDPOINT"]
+ASTRADB_NAMESPACE_NAME= api_key["ASTRADB_NAMESPACE_NAME"]
+ASTRADB_COLLECTION_NAME= api_key["ASTRADB_COLLECTION_NAME"]
+ASTRADB_TOKEN_KEY= api_key["ASTRADB_TOKEN_KEY"]
 
 # ********* Global Variables
 OUTPUT_CV_EXTRACT = {
