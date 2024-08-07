@@ -8,6 +8,11 @@ os.environ['Path'] = 'poppler-24.02.0\Library\bin'
 api_config = st.secrets["api"]
 openai_api_key = api_config["openai_api_key"]
 os.environ['OPENAI_API_KEY'] = openai_api_key
+if 'job_info' not in st.session_state:
+    st.session_state.job_info = {
+                'description': "",
+                'job_role': ""
+    } 
 def save_uploaded_file(uploaded_file):
     # Create the "uploads" directory if it doesn't exist
     if not os.path.exists("uploads"):
@@ -79,7 +84,7 @@ def show_main_content():
             if cols[1].button("Generate AI", key="edit_summary"):
                 st.session_state.code_executed = True
                 keyword_text_summary = cols[0].text_input(label="", placeholder="Enter your keywords", key="summary_keywords")
-                summary_ai_result = summary_ai(summary_text, keyword_text_summary, '')
+                summary_ai_result = summary_ai(summary_text, keyword_text_summary, st.session_state.job_info)
                 st.markdown("""
                     <style>
                     .stButton button {
@@ -152,7 +157,7 @@ def show_main_content():
                 if cols[1].button("Generate AI", key=f"edit_work_{experience['company_name']}_{experience['date']}"):
                     st.session_state.code_executed = True
                     keyword_text_experience = cols[0].text_input(label="", placeholder="Enter your keywords", key=key+"_keywords")
-                    work_experience_result = work_experience_ai(experience_text, keyword_text_experience, '')
+                    work_experience_result = work_experience_ai(experience_text, keyword_text_experience, st.session_state.job_info)
                     st.markdown("""
                         <style>
                         .stButton button {
@@ -228,7 +233,7 @@ def show_main_content():
                 if cols[1].button("Generate AI", key=f"edit_edu_{edu['school_name']}_{edu['date']}"):
                     st.session_state.code_executed = True
                     keyword_text_education = cols[0].text_input(label="", placeholder="Enter your keywords", key=key+"_keywords")
-                    education_result = education_ai(education_text, keyword_text_education, '')
+                    education_result = education_ai(education_text, keyword_text_education, st.session_state.job_info)
                     st.markdown("""
                         <style>
                         .stButton button {
@@ -300,7 +305,7 @@ def show_main_content():
                 if cols[1].button("Generate AI", key=f"project_{project['project_name']}_{key}"):
                     st.session_state.code_executed = True
                     keyword_text_project = cols[0].text_input(label="", placeholder="Enter your keywords", key=key+"_keywords")
-                    project_result = project_ai(project_text, keyword_text_project, '')
+                    project_result = project_ai(project_text, keyword_text_project, st.session_state.job_info)
                     st.markdown("""
                         <style>
                         .stButton button {
@@ -367,7 +372,7 @@ def show_main_content():
             if cols[1].button("Generate AI", key="edit_skill"):
                 st.session_state.code_executed = True
                 keyword_text_summary = cols[0].text_input(label="", placeholder="Enter your keywords", key="skill_keywords")
-                skills_result = skills_ai(experience_text, file_contents['cv'], keyword_text_skill, '')
+                skills_result = skills_ai(experience_text, file_contents['cv'], keyword_text_skill, st.session_state.job_info)
                 st.markdown("""
                     <style>
                     .stButton button {
