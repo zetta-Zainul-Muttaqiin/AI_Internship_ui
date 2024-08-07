@@ -128,7 +128,6 @@ def extract_cv_llm(chain, cv_content):
 
 # ********** Function for read a pdf, from pdf > images > text using OCR
 def pdf_to_text(pdf_bytes):
-    print('PDF BYTES: ', pdf_bytes)
     """
     Function to convert PDF to text using pdftotext within the layout.
 
@@ -140,11 +139,11 @@ def pdf_to_text(pdf_bytes):
     try:
 
         # ***** set a temporary file for the pdf bytes
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
-            temp_pdf.write(pdf_bytes)
-            temp_pdf_path = temp_pdf.name
+        # with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
+        #     temp_pdf.write(pdf_bytes)
+        #     temp_pdf_path = temp_pdf.name
     
-        args = ['pdftotext', '-layout', temp_pdf_path, '-']
+        args = ['pdftotext', '-layout', pdf_bytes, '-']
         cp = sp.run(
         args, 
         stdout=sp.PIPE, 
@@ -159,8 +158,8 @@ def pdf_to_text(pdf_bytes):
         print("An error occurred while converting PDF to text:", str(er_pdf))
     
     # ***** delete the temporary file    
-    finally:
-        os.remove(temp_pdf_path)
+    # finally:
+    #     os.remove(temp_pdf_path)
 
     # ***** join the pages after extract the text
     join_page = ""
@@ -186,10 +185,10 @@ def cv_extractor(cv_path):
     # is_url(cv_path)
     
     # ********* call function for read a pdf to temporary file
-    temp_pdf = request_url(cv_path)
+    # temp_pdf = request_url(cv_path)
     
     # ********** call function to convert pdf to text using pdftotext
-    context = pdf_to_text(temp_pdf)
+    context = pdf_to_text(cv_path)
 
     # ********** call function fpr generate chain for generate response
     extractorParser = JsonOutputParser(pydantic_object=ExtractorResume)
