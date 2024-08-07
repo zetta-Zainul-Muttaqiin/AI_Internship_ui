@@ -8,12 +8,6 @@ os.environ['Path'] = 'poppler-24.02.0\Library\bin'
 api_config = st.secrets["api"]
 openai_api_key = api_config["openai_api_key"]
 os.environ['OPENAI_API_KEY'] = openai_api_key
-if 'job_info' not in st.session_state:
-    st.session_state.job_info = {
-                'description': "",
-                'job_role': ""
-    } 
-
 def save_uploaded_file(uploaded_file):
     # Create the "uploads" directory if it doesn't exist
     if not os.path.exists("uploads"):
@@ -42,6 +36,9 @@ def update_education(data):
 def update_project(data):
     st.session_state[data['key']] = data
 
+def update_skill(data):
+    st.session_state['skill_data'] = data
+
 def show_main_content():
     st.title("LeBon Stage")
 
@@ -54,6 +51,7 @@ def show_main_content():
         with st.spinner("Processing your CV..."):
             # Process the uploaded PDF file
             file_contents = cv_extractor(file_path)
+           
             # You can add any further processing or display of the file contents here
             st.success("File processed successfully!")
             # Displaying the CV data in a table format using Streamlit
@@ -81,7 +79,7 @@ def show_main_content():
             if cols[1].button("Generate AI", key="edit_summary"):
                 st.session_state.code_executed = True
                 keyword_text_summary = cols[0].text_input(label="", placeholder="Enter your keywords", key="summary_keywords")
-                summary_ai_result = summary_ai(summary_text, keyword_text_summary, st.session_state.job_info['description'])
+                summary_ai_result = summary_ai(summary_text, keyword_text_summary, '')
                 st.markdown("""
                     <style>
                     .stButton button {
@@ -154,7 +152,7 @@ def show_main_content():
                 if cols[1].button("Generate AI", key=f"edit_work_{experience['company_name']}_{experience['date']}"):
                     st.session_state.code_executed = True
                     keyword_text_experience = cols[0].text_input(label="", placeholder="Enter your keywords", key=key+"_keywords")
-                    work_experience_result = work_experience_ai(experience_text, keyword_text_experience, st.session_state.job_info['description'])
+                    work_experience_result = work_experience_ai(experience_text, keyword_text_experience, '')
                     st.markdown("""
                         <style>
                         .stButton button {
@@ -221,7 +219,7 @@ def show_main_content():
                 st.text(f"Degree: {edu['degree_major']}")
                 st.text(f"Score: {edu['score']}")
                 st.text("Description:")
-                formatted_description = format_description(experience['description'])
+                formatted_description = format_description(edu['description'])
                 cols = st.columns([4, 1, 1])
                 if key not in st.session_state:    
                     education_text = cols[0].text_area(label="", value=formatted_description, key=f"edu_{edu['school_name']}_{edu['date']}")
@@ -230,7 +228,7 @@ def show_main_content():
                 if cols[1].button("Generate AI", key=f"edit_edu_{edu['school_name']}_{edu['date']}"):
                     st.session_state.code_executed = True
                     keyword_text_education = cols[0].text_input(label="", placeholder="Enter your keywords", key=key+"_keywords")
-                    education_result = education_ai(education_text, keyword_text_education, st.session_state.job_info['description'])
+                    education_result = education_ai(education_text, keyword_text_education, '')
                     st.markdown("""
                         <style>
                         .stButton button {
@@ -291,7 +289,7 @@ def show_main_content():
                 key = "project" + str(project_counter)
                 keyword_text_project = ""
                 st.subheader(project['project_name'])
-                st.text(f"Date: {edu['date']}")
+                st.text(f"Date: {project['date']}")
                 st.text("Description:")
                 formatted_description = format_description(project['description'])
                 cols = st.columns([4, 1, 1])
@@ -302,7 +300,7 @@ def show_main_content():
                 if cols[1].button("Generate AI", key=f"project_{project['project_name']}_{key}"):
                     st.session_state.code_executed = True
                     keyword_text_project = cols[0].text_input(label="", placeholder="Enter your keywords", key=key+"_keywords")
-                    project_result = project_ai(project_text, keyword_text_project, st.session_state.job_info['description'])
+                    project_result = project_ai(project_text, keyword_text_project, '')
                     st.markdown("""
                         <style>
                         .stButton button {
@@ -359,44 +357,70 @@ def show_main_content():
             # Skills
             st.header("Skills")
             formatted_description = format_description(file_contents['cv']['skills'])
+            # Use text_area for the summary
             keyword_text_skill = ""
-            cols = st.columns([4, 2])
-            cols[0].text_area(label="", value=formatted_description, key=f"skills")
-            if cols[1].button("Generate AI", key=f"edit_skills"):
+            cols = st.columns([4, 1, 1])
+            if 'skill_data' not in st.session_state:
+                skill_text = cols[0].text_area(label="", value=formatted_description, key=f"skills")   
+            else:
+                skill_text = cols[0].text_area(label="", value=st.session_state['skill_data']['skill'], key="skill")
+            if cols[1].button("Generate AI", key="edit_skill"):
                 st.session_state.code_executed = True
-                keyword_text_skill = cols[0].text_input(label="", placeholder="Enter your keywords")
-                skills_result = skills_ai(experience_text, file_contents['cv'], keyword_text_skill, st.session_state.job_info['description'])
-                # Create HTML table
-                html_table = f"""
-                    <div style="overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <thead>
-                                <tr>
-                                    <th style="border: 1px solid black; padding: 8px; text-align: left;">Description</th>
-                                    <th style="border: 1px solid black; padding: 8px; text-align: left;">Summary</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td style="border: 1px solid black; padding: 8px;">Recommended</td>
-                                    <td style="border: 1px solid black; padding: 8px;">{skills_result["skills_ai_result"]["recommended"]}</td>
-                                </tr>
-                                <tr>
-                                    <td style="border: 1px solid black; padding: 8px;">Simplified</td>
-                                    <td style="border: 1px solid black; padding: 8px;">{skills_result["skills_ai_result"]["simplified"]}</td>
-                                </tr>
-                                <tr>
-                                    <td style="border: 1px solid black; padding: 8px;">Extended</td>
-                                    <td style="border: 1px solid black; padding: 8px;">{skills_result["skills_ai_result"]["extended"]}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    """
+                keyword_text_summary = cols[0].text_input(label="", placeholder="Enter your keywords", key="skill_keywords")
+                skills_result = skills_ai(experience_text, file_contents['cv'], keyword_text_skill, '')
+                st.markdown("""
+                    <style>
+                    .stButton button {
+                        height: 100%;
+                    }
+                    .stColumn div {
+                        height: 100%;
+                        display: flex;
+                        align-items: center;
+                    }
+                    .stColumn {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
 
-                # Inject the HTML table into Streamlit
-                st.markdown(html_table, unsafe_allow_html=True)
-                st.write(file_contents)
+                # Display the summaries and buttons
+                for description, skill in skills_result["skills_ai_result"].items():
+                    cols2 = st.columns([2, 5, 1])
+                    cols2[0].write(description.capitalize() + ":")
+                    cols2[1].write(skill)
+                    with cols2[2]:
+                        st.button('➕', on_click=lambda d={'skills_ai_result': skills_result, 'skill': format_description(skill)}: update_skill(d), key=description)
+            elif 'skill_data' in st.session_state:
+                st.session_state.code_executed = True
+                keyword_text_summary = cols[0].text_input(label="", placeholder="Enter your keywords", key="summary_keywords")
+                skills_result = st.session_state['skill_data']['skills_ai_result']
+                st.markdown("""
+                    <style>
+                    .stButton button {
+                        height: 100%;
+                    }
+                    .stColumn div {
+                        height: 100%;
+                        display: flex;
+                        align-items: center;
+                    }
+                    .stColumn {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+
+                # Display the summaries and buttons
+                for description, skill in skills_result["skills_ai_result"].items():
+                    cols2 = st.columns([2, 5, 1])
+                    cols2[0].write(description.capitalize() + ":")
+                    cols2[1].write(skill)
+                    with cols2[2]:
+                        st.button('➕', on_click=lambda d={'skills_ai_result': skills_result, 'skill': format_description(skill)}: update_skill(d), key=description)
+                # st.write(file_contents)
     else:
         st.write("Please upload your CV here.")
 
