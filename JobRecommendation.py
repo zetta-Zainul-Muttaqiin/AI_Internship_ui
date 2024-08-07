@@ -122,7 +122,7 @@ if ('data' in st.session_state.results) or ('data_recommend' in st.session_state
                     'description': desc,
                     'job_role': job_role
                     }
-                st.page_link('pages/CV_Upload.py.py', label=f"Apply as {job_role}")
+                st.page_link('pages/CV_Upload.py', label=f"Apply as {job_role}")
 
     else:
         st.text("No internships matched your keyword.")
@@ -164,4 +164,4 @@ if ('data' in st.session_state.results) or ('data_recommend' in st.session_state
                     'description': desc,
                     'job_role': job_role
                     }
-                st.page_link('pages/CV_Upload.py.py', label=f"Apply as {job_role}")
+                st.page_link('pages/CV_Upload.py', label=f"Apply as {job_role}")
