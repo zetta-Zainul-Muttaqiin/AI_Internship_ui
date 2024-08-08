@@ -47,6 +47,7 @@ def get_selected_description(job_url):
     except ConnectionError as e:
         # Handle the connection error
         print(e)
+        raise ConnectionError(str(e))
 
     get_one_details = astrapy_description.find_one(
         filter={
