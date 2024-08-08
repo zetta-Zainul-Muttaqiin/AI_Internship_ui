@@ -79,6 +79,13 @@ def update_project(data):
 def update_skill(data):
     st.session_state['skill_data'] = data
 
+def save_details():
+    st.session_state.cv_details = {
+        'summary': st.session_state.summary_current if 'summary_current' in st.session_state else {},
+        # Add more details to save as needed
+    }
+    st.success("CV details saved!")
+
 def show_main_content():
     st.title("LeBon Stage")
 
@@ -89,14 +96,16 @@ def show_main_content():
         st.sidebar.write("No job details available.")
 
     # File uploader
-    uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
+    if 'uploaded_file' not in st.session_state.upload_file:
+        st.session_state.uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 
-    if uploaded_file:
+    if st.session_state.uploaded_file:
         # Save the uploaded file to disk
-        file_path = save_uploaded_file(uploaded_file)
+        file_path = save_uploaded_file(st.session_state.uploaded_file)
         with st.spinner("Processing your CV..."):
             # Process the uploaded PDF file
-            file_contents = cv_extractor(file_path)
+            if "file_contents" not in st.session_state:
+                st.session_state.file_contents = cv_extractor(file_path)
            
             # You can add any further processing or display of the file contents here
             st.success("File processed successfully!")
@@ -106,11 +115,16 @@ def show_main_content():
                 # Add '-' before each description item
                 formatted = '\n'.join(f"- {desc}" for desc in description_list)
                 return formatted
+            
+            if st.button('Save'):
+                save_details()
+
+            st.write("Let AI Boost Your CV for Your Internship")
 
             # Displaying the CV data in a table format using Streamlit
             # Summary
             st.header("Summary")
-            summary = file_contents['cv']['summary']
+            summary = st.session_state.file_contents['cv']['summary']
             # Use text_area for the summary
             keyword_text_summary = ""
             st.text(f"Name: {summary['name']}")
@@ -178,10 +192,20 @@ def show_main_content():
                     cols2[1].write(summary)
                     with cols2[2]:
                         st.button('➕', on_click=lambda d={'summary_ai_result': summary_ai_result, 'summary': summary}: update_summary(d), key=description)
+            
+            if 'summary' in st.session_state:
+                st.session_state.summary_current = {
+                    "Name": summary['name'],
+                    "Location": summary['location'],
+                    "Phone": summary['phone'],
+                    "Email": summary['email'],
+                    "summary": st.session_state.summary
+                }
+            
             # Work Experience
             st.header("Work Experience")
             experience_counter = 0
-            for experience in file_contents['cv']['work_experience']:
+            for experience in st.session_state.file_contents['cv']['work_experience']:
                 experience_counter += 1
                 key = "work_experience" + str(experience_counter)
                 keyword_text_experience = ""
@@ -256,7 +280,7 @@ def show_main_content():
             # Education
             st.header("Education")
             education_counter = 0
-            for edu in file_contents['cv']['education']:
+            for edu in st.session_state.file_contents['cv']['education']:
                 education_counter += 1
                 key = "education" + str(education_counter)
                 keyword_text_education = ""
@@ -330,7 +354,7 @@ def show_main_content():
                             st.button('➕', on_click=lambda d={'data': education_result, 'key': key, 'description': format_description(education)}: update_education(d), key=key+description)
             st.header("Projects")
             project_counter = 0
-            for project in file_contents['cv']['project']:
+            for project in st.session_state.file_contents['cv']['project']:
                 project_counter += 1
                 key = "project" + str(project_counter)
                 keyword_text_project = ""
@@ -402,7 +426,7 @@ def show_main_content():
                             st.button('➕', on_click=lambda d={'data': project_result, 'key': key, 'description': format_description(project)}: update_project(d), key=key+description)
             # Skills
             st.header("Skills")
-            formatted_description = format_description(file_contents['cv']['skills'])
+            formatted_description = format_description(st.session_state.file_contents['cv']['skills'])
             # Use text_area for the summary
             keyword_text_skill = ""
             cols = st.columns([4, 1, 1])
@@ -413,7 +437,7 @@ def show_main_content():
             if cols[1].button("Generate AI", key="edit_skill"):
                 st.session_state.code_executed = True
                 keyword_text_summary = cols[0].text_input(label="", placeholder="Enter your keywords", key="skill_keywords")
-                skills_result = skills_ai(experience_text, file_contents['cv'], keyword_text_skill, st.session_state.job_info)
+                skills_result = skills_ai(experience_text, st.session_state.file_contents['cv'], keyword_text_skill, st.session_state.job_info)
                 st.markdown("""
                     <style>
                     .stButton button {
