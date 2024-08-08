@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from cv_upload import cv_extractor
 from cv_generator import summary_ai, work_experience_ai, education_ai, project_ai, skills_ai
+from job_recommend import get_selected_description
 
 os.environ['Path'] = 'poppler-24.02.0\Library\bin'
 api_config = st.secrets["api"]
@@ -10,9 +11,43 @@ openai_api_key = api_config["openai_api_key"]
 os.environ['OPENAI_API_KEY'] = openai_api_key
 if 'job_info' not in st.session_state:
     st.session_state.job_info = {
-                'description': "",
-                'job_role': ""
-    } 
+                    'job_url': "",
+                    'job_role': ""
+                    }
+else:
+    if st.session_state.job_info["job_url"] != "":
+        job_url = st.session_state.job_info["job_url"]
+        st.session_state.job_details = get_selected_description(job_url)
+        st.session_state.job_adapt = {
+            'job_role': st.session_state.job_details['job_role'],
+            'location': st.session_state.job_details['location'],
+            'description': st.session_state.job_details['description'],
+            'company': st.session_state.job_details['company'],
+            'company_description': st.session_state.job_details['company_description'],
+        }
+st.write(st.session_state)
+def displayed_job_adapt():
+    st.session_state.job_adapt = {
+        'job_role': st.session_state.job_details['job_role'],
+        'location': st.session_state.job_details['location'],
+        'description': st.session_state.job_details['description'],
+        'company': st.session_state.job_details['company'],
+        'company_description': st.session_state.job_details['company_description'],
+    }
+
+    # *************** SIDEBAR FOR DISPLAYING JOB DETAILS ***************
+    st.sidebar.header("Job Details")
+
+    st.sidebar.text_input(label="Job Role", value=st.session_state.job_adapt['job_role'], disabled=True)
+
+    st.sidebar.text_input(label="Location", value=st.session_state.job_adapt['location'], disabled=True)
+
+    st.sidebar.text_area(label="Description", value=st.session_state.job_adapt['description'], disabled=True)
+
+    st.sidebar.text_input(label="Company", value=st.session_state.job_adapt['company'], disabled=True)
+
+    st.sidebar.text_area(label="Company Description", value=st.session_state.job_adapt['company_description'], disabled=True)
+
 def save_uploaded_file(uploaded_file):
     # Create the "uploads" directory if it doesn't exist
     if not os.path.exists("uploads"):
@@ -46,6 +81,12 @@ def update_skill(data):
 
 def show_main_content():
     st.title("LeBon Stage")
+
+    
+    if 'job_details' in st.session_state:
+        displayed_job_adapt()
+    else:
+        st.sidebar.write("No job details available.")
 
     # File uploader
     uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")

@@ -28,10 +28,25 @@ def get_astradb_collection():
         )
         astrapy = AstraDB(
             token=ASTRADB_TOKEN_KEY,
-            api_endpoint="https://c8c9b326-6509-4516-9f07-54f186374421-us-east-2.apps.astra.datastax.com",
+            api_endpoint=ASTRADB_API_ENDPOINT,
+
             namespace=ASTRADB_NAMESPACE_NAME)
         astrapy_collection = astrapy.collection(collection_name="job_info_vectorize")
         return astrapy_collection, astrapy_collection_v2
     except Exception as e:
         # ****** Handle exceptions ******
-        raise ConnectionError(f"Failed to connect to AstraDB: {e}")
+        raise ConnectionError(f"Failed to connect to AstraDB vector: {e}")
+    
+
+def get_astradb_description():
+    try:
+        astrapy = AstraDB(
+                token=ASTRADB_TOKEN_KEY,
+                api_endpoint=ASTRADB_API_ENDPOINT,
+                namespace=ASTRADB_NAMESPACE_NAME)
+        astrapy_descriptionn = astrapy.collection(collection_name="descriptions_detail")
+        return astrapy_descriptionn
+
+    except Exception as e:
+        # ****** Handle exceptions ******
+        raise ConnectionError(f"Failed to connect to AstraDB description: {e}")

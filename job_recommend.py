@@ -1,5 +1,5 @@
 # *************** Import Helper ***************
-from helpers.astradb_connect_helper import get_astradb_collection
+from helpers.astradb_connect_helper import get_astradb_collection, get_astradb_description
 
 def search_simillar_job(query, search_filter):
     """
@@ -30,6 +30,32 @@ def search_simillar_job(query, search_filter):
     )
     return v_search, v2_search
 
+def get_selected_description(job_url):
+    """
+    Search for similar job postings in the AstraDB collection using vectorization.
+    
+    Args:
+        job_url (str): an unique url from the selected data from table
+        
+    Returns:
+        dict: .
+    """
+    # ****** Perform a search query in the AstraDB collection ******
+    try:
+        astrapy_description = get_astradb_description()
+
+    except ConnectionError as e:
+        # Handle the connection error
+        print(e)
+
+    get_one_details = astrapy_description.find_one(
+        filter={
+            'job_url': job_url
+        }
+    )
+
+    return get_one_details['data']['document']
+
 def set_sending_data(table, table_v2):
     """
     Prepare and format the job data to be sent as a response.
@@ -46,7 +72,7 @@ def set_sending_data(table, table_v2):
     for document in table:
         # ****** Create a dictionary for each job with the required fields ******
         data_field = {
-            "job_id": document['_id'],
+            "job_url": document['job_url'],
             "job_role": document['job_role'],
             "location": document['location'],
             "job_category": document['categories'],
@@ -61,7 +87,7 @@ def set_sending_data(table, table_v2):
         for document_v2 in table_v2:
             # ****** Create a dictionary for each job with the required fields ******
             data_field = {
-                "job_id": document_v2['_id'],
+                "job_url": document_v2['job_url'],
                 "similarity": document_v2['$similarity'],
                 "job_role": document_v2['job_role'],
                 "location": document_v2['location'],
@@ -142,4 +168,5 @@ def run_vector_search(query):
 
 if __name__ == "__main__":
 
-    run_vector_search("marketing")
+    result = get_selected_description("https://www.jobteaser.com/en/job-offers/350a01a1-6138-4ba8-9a97-d9a665acb1b5-clearstream-luxembourg-deutsche-borse-group-intern-product-marketing-f-m-d")
+    print(type(result), result)
