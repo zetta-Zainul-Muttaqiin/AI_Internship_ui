@@ -1,30 +1,30 @@
 import streamlit as st
 from cover_letter import cover_letter_creation
 from setup import predefined_cvs
+from pages.CV_Upload import displayed_job_adapt
+from setup import CV
 
 def run_streamlit_app():
-    st.set_page_config(layout="wide")
+
+    if 'cv_details' not in st.session_state:
+        st.session_state.cv_details = CV
 
     st.title("Cover Letter Generator")
 
     # ********* Sidebar for CV Upload *********
     st.sidebar.title("Select CV")
-    cv_selection = st.sidebar.selectbox("Select your CV", options=["", "ADE CV", "Joseph CV"])
+    if 'cv_details' in st.session_state and 'uploaded_file' in st.session_state:
+        cv_selection = st.sidebar.selectbox("Select your CV", options=[st.session_state.uploaded_file.name], disabled=True)
+        cv_content = st.session_state.cv_details
+    else:    
+        cv_selection = st.sidebar.selectbox("Select your CV", options=["", "ADE CV", "Joseph CV"])
 
-    cv_content = predefined_cvs.get(cv_selection, "")
-
-    # ********* Job Information Input *********
-    st.sidebar.subheader("Goals")
-    job_detail = st.sidebar.text_area("Job Information", height=150)
-    job_role = st.sidebar.text_input("Job Role")
-    company_name = st.sidebar.text_input("Company Name")
-
-
-    job_info = {
-        "job_detail": job_detail,
-        "job_role": job_role,
-        "compnay_name": company_name
-    }
+        cv_content = predefined_cvs.get(cv_selection, "")
+    # ********* Job Information Displayed *********
+    if 'job_details' in st.session_state:
+        displayed_job_adapt()
+    else:
+        st.sidebar.write("No job details available.")
 
     # ********* Keywords Input *********
     keywords = st.sidebar.text_area("Enter keywords for the cover letter order", height=50)
@@ -34,11 +34,11 @@ def run_streamlit_app():
         
         if not cv_content:
             st.sidebar.error("Please select a CV.")
-        elif not job_info:
+        elif "job_info" not in st.session_state:
             st.sidebar.error("Please provide job information.")
         else:
             try:
-                result = cover_letter_creation(cv_content, job_info, keywords)
+                result = cover_letter_creation(cv_content, st.session_state["job_info"], keywords)
                 st.subheader("Generated Cover Letter")
                 st.write(result["cover_letter_ai"])
             except KeyError as e:
@@ -66,10 +66,7 @@ def run_streamlit_app():
             summary.text(f"Phone: {summary_data['phone']}")
             summary.text(f"Email: {summary_data['email']}")
             with summary.expander('', expanded=True):
-                summary.markdown(f'''Summary:\n
-                {summary_data['summary']}
-                ''', 
-                unsafe_allow_html=True)
+                summary.text_area(label='Summary:', value=summary_data['summary'])
 
             works_data = cv_content['work_experience']
             for experience in works_data:
@@ -107,10 +104,8 @@ def run_streamlit_app():
         if 'result' in locals():
             st.text_area("Cover Letter", result["cover_letter_ai"], height=400)
 
-    # ********* Save and Next Step Buttons *********
-    st.sidebar.button("Save")
-    st.sidebar.button("Next Step")
-
 # *************** RUN STREAMLIT APP ***************
 if __name__ == "__main__":
+    st.write(st.session_state)
     run_streamlit_app()
+    st.write(st.session_state)

@@ -125,6 +125,67 @@ list_of_education = [''] +['BAC +5', 'nan', 'BAC +3', 'BAC +2', 'No Level Prereq
 
 list_of_durations = [''] +['2 months', '3 months', '4 months', '6 months']
 
+CV = {
+        "summary": {
+            "email": "ade.n.dewantoro@student.uns.ac.id",
+            "location": "Surakarta, Indonesia",
+            "name": "Ade Nugroho Dewantoro (Mr)",
+            "phone": "+6287855090955",
+            "summary": "An quick learner and enthusiastic Mechanical Engineer with experience in practical, analysis and research. Experienced in numerical studies and developing a new way of learning in engineering field, that combine Finite Element Method and Experiential Learning. Currently study meshless Radial Basis Function method and domain decomposition to simulate a natural convection in the annular surface."
+        },
+        "work_experience": [
+            {
+                "company_name": "LPPKS",
+                "date": "06/2019 — 12/2019",
+                "description": [
+                    "Communicated with department of education, assessor, and LPPKS",
+                    "Prepared assessment instrument for the event",
+                    "Ensured every event that assigned ran according to the standard established by the Ministry of Education Republic Indonesia",
+                    "Assigned to different regions: Riau, Aceh Jaya, Pelembang, Sumba Island, Bojonegoro, and Surakarta"
+                ],
+                "job_title": "Freelance Staff"
+            }
+        ],
+        "education": [
+            {
+                "date": "09/2015 — 07/2019",
+                "degree_major": "Bachelor of Education in Mechanical Engineering from Departement of Vocational Education, with major in Automotive Engineering and Energy Conversion",
+                "description": [],
+                "school_name": "Sebelas Maret University, Indonesia",
+                "score": "4-year scholarship (Bidik Misi) from Ministry of Research, Technology and Higer Education, Republic Indonesia"
+            },
+            {
+                "date": "09/2020 — Present",
+                "degree_major": "Master's degree in Mechanical Engineering from Postgraduate Departement, with major in Energy Conversion",
+                "description": [],
+                "school_name": "Sebelas Maret University, Indonesia",
+                "score": "2-year scholarship from Sebelas Maret University"
+            }
+        ],
+        "project": [
+            {
+                "date": "2017",
+                "description": "Analyzed the comparative variation of the composition of palm waste and coconut shells to find the highest calorific value as an indicator of new energy that can achieve SDGS 2030. Responsible for preparing the sample with the variation composition.",
+                "project_name": "Refuse Derifed Fuel Project 2017"
+            },
+            {
+                "date": "2019",
+                "description": "Focused on providing a new way of learning in engineering field by combining Experiential Learning and Finite Element Method. Established a new learning options for turbine engineering courses.",
+                "project_name": "Final Year Project 2019"
+            },
+            {
+                "date": "2020",
+                "description": "Research for modeling natural convection in the annular pipe using Radial Basis Function. Project is in progress.",
+                "project_name": "Master Project 2020"
+            }
+        ],
+        "skills": [
+            "Solidworks: Able to create 2D and 3D design",
+            "Ansys: Able to simulate an airfoil for wind turbine use using the finite element method",
+            "Matlab: Able to make an algorithm and coding a program to simulate simple engineering problems using matlab software"
+        ]
+    }
+
 predefined_cvs = {
     "ADE CV": {
         "summary": {

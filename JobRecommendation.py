@@ -11,9 +11,9 @@ from setup import (
 )
 
 st.set_page_config(
-    page_title="search"
+    page_title="search",
+    layout="wide"
 )
-st.write(st.session_state)
     # Initialize session state for inputs and results if not already set
 if 'keywords' not in st.session_state:
     st.session_state["keywords"] = ""
@@ -173,3 +173,5 @@ if ('data' in st.session_state["results"]) or ('data_recommend' in st.session_st
                     }
                
                 st.page_link('pages/CV_Upload.py', label=f"Apply as {job_role}")
+
+st.write(st.session_state)

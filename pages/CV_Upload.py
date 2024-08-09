@@ -104,38 +104,38 @@ def show_main_content():
     # File uploader
     uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 
-    if uploaded_file and "uploaded_file" not in st.session_state:
-        st.session_state.uploaded_file = uploaded_file
-        file_path = save_uploaded_file(st.session_state.uploaded_file)
-        with st.spinner("Processing your CV..."):
-            # Process the uploaded PDF file
-            st.write("first_cv_extracted")
-            st.session_state["file_contents"] = cv_extractor(file_path)
-            st.success("CV processed successfully!")
-            
-            st.session_state.summary_curr = st.session_state["file_contents"]['cv']['summary']
-            st.session_state.work_experience_curr = st.session_state["file_contents"]['cv']['work_experience']
-            st.session_state.education_curr = st.session_state["file_contents"]['cv']['education']
-            st.session_state.project_curr = st.session_state["file_contents"]['cv']['project']
-            st.session_state.skills_curr = st.session_state["file_contents"]['cv']['skills']
-    
-    elif "uploaded_file" in st.session_state:
-        st.write("CURR FILE:", st.session_state.uploaded_file.name, uploaded_file.name)
-        if st.session_state.uploaded_file != uploaded_file:
-            # Save the uploaded file to disk
+    if uploaded_file:
+        if "uploaded_file" not in st.session_state:
+            st.session_state.uploaded_file = uploaded_file
             file_path = save_uploaded_file(st.session_state.uploaded_file)
             with st.spinner("Processing your CV..."):
                 # Process the uploaded PDF file
+                st.write("first_cv_extracted")
                 st.session_state["file_contents"] = cv_extractor(file_path)
-                st.success("New CV processed successfully!")
+                st.success("CV processed successfully!")
                 
                 st.session_state.summary_curr = st.session_state["file_contents"]['cv']['summary']
                 st.session_state.work_experience_curr = st.session_state["file_contents"]['cv']['work_experience']
                 st.session_state.education_curr = st.session_state["file_contents"]['cv']['education']
                 st.session_state.project_curr = st.session_state["file_contents"]['cv']['project']
                 st.session_state.skills_curr = st.session_state["file_contents"]['cv']['skills']
-    
-    if uploaded_file:
+        
+        elif "uploaded_file" in st.session_state:
+            st.write("CURR FILE:", st.session_state.uploaded_file.name, uploaded_file.name)
+            if st.session_state.uploaded_file != uploaded_file:
+                # Save the uploaded file to disk
+                file_path = save_uploaded_file(st.session_state.uploaded_file)
+                with st.spinner("Processing your CV..."):
+                    # Process the uploaded PDF file
+                    st.session_state["file_contents"] = cv_extractor(file_path)
+                    st.success("New CV processed successfully!")
+                    
+                    st.session_state.summary_curr = st.session_state["file_contents"]['cv']['summary']
+                    st.session_state.work_experience_curr = st.session_state["file_contents"]['cv']['work_experience']
+                    st.session_state.education_curr = st.session_state["file_contents"]['cv']['education']
+                    st.session_state.project_curr = st.session_state["file_contents"]['cv']['project']
+                    st.session_state.skills_curr = st.session_state["file_contents"]['cv']['skills']
+        
         st.session_state.uploaded_file = uploaded_file
             
         if st.session_state["file_contents"]:
