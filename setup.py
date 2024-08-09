@@ -125,57 +125,117 @@ list_of_education = [''] +['BAC +5', 'nan', 'BAC +3', 'BAC +2', 'No Level Prereq
 
 list_of_durations = [''] +['2 months', '3 months', '4 months', '6 months']
 
-CV = {
-    "cv": {
-            "summary": {
-                "email": "josephdiva2@gmail.com",
-                "location": "",
-                "name": "Josephine Diva",
-                "phone": "089618587103",
-                "summary": "My name is Josephine, and I am passionate about artificial intelligence (AI) and software development. With two years of experience in software development using Java, as well as nearly a year of experience with Python, I have been involved in various projects ranging from desktop applications to machine learning algorithm implementations. I believe that AI has great potential to change the world, and I am committed to continuously expanding my knowledge and skills in this field to create innovative and empowering technological solutions."
+predefined_cvs = {
+    "ADE CV": {
+        "summary": {
+            "email": "ade.n.dewantoro@student.uns.ac.id",
+            "location": "Surakarta, Indonesia",
+            "name": "Ade Nugroho Dewantoro (Mr)",
+            "phone": "+6287855090955",
+            "summary": "An quick learner and enthusiastic Mechanical Engineer with experience in practical, analysis and research. Experienced in numerical studies and developing a new way of learning in engineering field, that combine Finite Element Method and Experiential Learning. Currently study meshless Radial Basis Function method and domain decomposition to simulate a natural convection in the annular surface."
+        },
+        "work_experience": [
+            {
+                "company_name": "LPPKS",
+                "date": "06/2019 — 12/2019",
+                "description": [
+                    "Communicated with department of education, assessor, and LPPKS",
+                    "Prepared assessment instrument for the event",
+                    "Ensured every event that assigned ran according to the standard established by the Ministry of Education Republic Indonesia",
+                    "Assigned to different regions: Riau, Aceh Jaya, Pelembang, Sumba Island, Bojonegoro, and Surakarta"
+                ],
+                "job_title": "Freelance Staff"
+            }
+        ],
+        "education": [
+            {
+                "date": "09/2015 — 07/2019",
+                "degree_major": "Bachelor of Education in Mechanical Engineering from Departement of Vocational Education, with major in Automotive Engineering and Energy Conversion",
+                "description": [],
+                "school_name": "Sebelas Maret University, Indonesia",
+                "score": "4-year scholarship (Bidik Misi) from Ministry of Research, Technology and Higer Education, Republic Indonesia"
             },
-            "work_experience": [
-                {
-                    "company_name": "ID/X Partners x Rakamin Academy",
-                    "date": "Oct 2023 - Nov 2023",
-                    "description": [
-                        "During the execution of the Project Based Internship program, I had the opportunity to gain insights into the role of a Data Engineer at ID/X Partners. I also learned how to solve problems and work on projects aligned with the activities of ID/X Partners."
-                    ],
-                    "job_title": "Data Engineer Intern"
-                },
-                {
-                    "company_name": "Bangkit Academy led by Google, Tokopedia, Gojek, & Traveloka",
-                    "date": "Feb 2023 - Jul 2023",
-                    "description": [
-                        "Bangkit is offered as a Kampus Merdeka’s Studi Independen Bersertifikat program supported by the Ministry of Education, Culture, Research and Technology of the Republic of Indonesia. Throughout 2 (two) semesters, we are enrolling at minimum 9,000 university students across 3 learning paths to help them grow in-demand skills in tech and prepare them to take Google’s certification."
-                    ],
-                    "job_title": "Machine Learning Cohort"
-                }
-            ],
-            "education": [
-                {
-                    "date": "Aug 2020 - Dec 2024",
-                    "degree_major": "Bachelor's Degree in Informatics",
-                    "description": [],
-                    "school_name": "Sanata Dharma University",
-                    "score": ""
-                }
-            ],
-            "project": [],
-            "skills": [
-                "Computer Vision",
-                "Natural Language Processing (NLP)",
-                "Convolutional Neural Networks (CNN)",
-                "Golang Fundamental",
-                "SQL Basic",
-                "SQL Operation",
-                "OLAP Data Modeling",
-                "ETL & ELT",
-                "Data Warehouse Scheduling",
-                "Data Warehouse Management"
-            ]
-        }
+            {
+                "date": "09/2020 — Present",
+                "degree_major": "Master's degree in Mechanical Engineering from Postgraduate Departement, with major in Energy Conversion",
+                "description": [],
+                "school_name": "Sebelas Maret University, Indonesia",
+                "score": "2-year scholarship from Sebelas Maret University"
+            }
+        ],
+        "project": [
+            {
+                "date": "2017",
+                "description": "Analyzed the comparative variation of the composition of palm waste and coconut shells to find the highest calorific value as an indicator of new energy that can achieve SDGS 2030. Responsible for preparing the sample with the variation composition.",
+                "project_name": "Refuse Derifed Fuel Project 2017"
+            },
+            {
+                "date": "2019",
+                "description": "Focused on providing a new way of learning in engineering field by combining Experiential Learning and Finite Element Method. Established a new learning options for turbine engineering courses.",
+                "project_name": "Final Year Project 2019"
+            },
+            {
+                "date": "2020",
+                "description": "Research for modeling natural convection in the annular pipe using Radial Basis Function. Project is in progress.",
+                "project_name": "Master Project 2020"
+            }
+        ],
+        "skills": [
+            "Solidworks: Able to create 2D and 3D design",
+            "Ansys: Able to simulate an airfoil for wind turbine use using the finite element method",
+            "Matlab: Able to make an algorithm and coding a program to simulate simple engineering problems using matlab software"
+        ]
+    },
+    "Joseph CV": {
+        "summary": {
+            "email": "josephdiva2@gmail.com",
+            "location": "",
+            "name": "Josephine Diva",
+            "phone": "089618587103",
+            "summary": "My name is Josephine, and I am passionate about artificial intelligence (AI) and software development. With two years of experience in software development using Java, as well as nearly a year of experience with Python, I have been involved in various projects ranging from desktop applications to machine learning algorithm implementations. I believe that AI has great potential to change the world, and I am committed to continuously expanding my knowledge and skills in this field to create innovative and empowering technological solutions."
+        },
+        "work_experience": [
+            {
+                "company_name": "ID/X Partners x Rakamin Academy",
+                "date": "Oct 2023 - Nov 2023",
+                "description": [
+                    "During the execution of the Project Based Internship program, I had the opportunity to gain insights into the role of a Data Engineer at ID/X Partners. I also learned how to solve problems and work on projects aligned with the activities of ID/X Partners."
+                ],
+                "job_title": "Data Engineer Intern"
+            },
+            {
+                "company_name": "Bangkit Academy led by Google, Tokopedia, Gojek, & Traveloka",
+                "date": "Feb 2023 - Jul 2023",
+                "description": [
+                    "Bangkit is offered as a Kampus Merdeka’s Studi Independen Bersertifikat program supported by the Ministry of Education, Culture, Research and Technology of the Republic of Indonesia. Throughout 2 (two) semesters, we are enrolling at minimum 9,000 university students across 3 learning paths to help them grow in-demand skills in tech and prepare them to take Google’s certification."
+                ],
+                "job_title": "Machine Learning Cohort"
+            }
+        ],
+        "education": [
+            {
+                "date": "Aug 2020 - Dec 2024",
+                "degree_major": "Bachelor's Degree in Informatics",
+                "description": [],
+                "school_name": "Sanata Dharma University",
+                "score": ""
+            }
+        ],
+        "project": [],
+        "skills": [
+            "Computer Vision",
+            "Natural Language Processing (NLP)",
+            "Convolutional Neural Networks (CNN)",
+            "Golang Fundamental",
+            "SQL Basic",
+            "SQL Operation",
+            "OLAP Data Modeling",
+            "ETL & ELT",
+            "Data Warehouse Scheduling",
+            "Data Warehouse Management"
+        ]
     }
+}
 
 LOGGER.info("Setup Done")
 

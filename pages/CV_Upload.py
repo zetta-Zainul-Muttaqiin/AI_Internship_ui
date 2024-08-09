@@ -4,7 +4,6 @@ import pandas as pd
 from cv_upload import cv_extractor
 from cv_generator import summary_ai, work_experience_ai, education_ai, project_ai, skills_ai
 from job_recommend import get_selected_description
-from setup import CV
 
 os.environ['Path'] = r'poppler-24.02.0\Library\bin'
 api_config = st.secrets["api"]
@@ -66,8 +65,11 @@ def update_skill(data):
 
 def save_details():
     st.session_state["cv_details"] = {
-        'summary': st.session_state["summary_current"] if 'summary_current' in st.session_state else {},
-        # Add more details to save as needed
+        'summary': st.session_state["summary_curr"] if 'summary_curr' in st.session_state else {},
+        'work_experience': st.session_state["work_experience_curr"] if 'work_experience_curr' in st.session_state else {},
+        'education': st.session_state["education_curr"] if 'education_curr' in st.session_state else {},
+        'project': st.session_state["project_curr"] if 'project_curr' in st.session_state else {},
+        'skills': st.session_state["skills_curr"] if 'skills_curr' in st.session_state else {},
     }
     st.success("CV details saved!")
 
@@ -101,33 +103,49 @@ def show_main_content():
 
     # File uploader
     uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
-    if st.session_state["file_contents"] == "":
-        st.write("cv_already_extract")
-        st.session_state["file_contents"] = CV
 
-        st.session_state.summary_curr = st.session_state["file_contents"]['cv']['summary']
-        st.session_state.work_experience_curr = st.session_state["file_contents"]['cv']['work_experience']
-        st.session_state.education_curr = st.session_state["file_contents"]['cv']['education']
-        st.session_state.project_curr = st.session_state["file_contents"]['cv']['project']
-        st.session_state.skills_curr = st.session_state["file_contents"]['cv']['skills']
-    
-    if uploaded_file:
-        # Save the uploaded file to disk
-        file_path = save_uploaded_file(uploaded_file)
+    if uploaded_file and "uploaded_file" not in st.session_state:
+        st.session_state.uploaded_file = uploaded_file
+        file_path = save_uploaded_file(st.session_state.uploaded_file)
         with st.spinner("Processing your CV..."):
             # Process the uploaded PDF file
-            st.write("cv_extracted")
-            st.session_state["file_contents"] = CV #cv_extractor(file_path)
+            st.write("first_cv_extracted")
+            st.session_state["file_contents"] = cv_extractor(file_path)
+            st.success("CV processed successfully!")
             
             st.session_state.summary_curr = st.session_state["file_contents"]['cv']['summary']
             st.session_state.work_experience_curr = st.session_state["file_contents"]['cv']['work_experience']
             st.session_state.education_curr = st.session_state["file_contents"]['cv']['education']
             st.session_state.project_curr = st.session_state["file_contents"]['cv']['project']
             st.session_state.skills_curr = st.session_state["file_contents"]['cv']['skills']
+    
+    elif "uploaded_file" in st.session_state:
+        st.write("CURR FILE:", st.session_state.uploaded_file.name, uploaded_file.name)
+        if st.session_state.uploaded_file != uploaded_file:
+            # Save the uploaded file to disk
+            file_path = save_uploaded_file(st.session_state.uploaded_file)
+            with st.spinner("Processing your CV..."):
+                # Process the uploaded PDF file
+                st.session_state["file_contents"] = cv_extractor(file_path)
+                st.success("New CV processed successfully!")
+                
+                st.session_state.summary_curr = st.session_state["file_contents"]['cv']['summary']
+                st.session_state.work_experience_curr = st.session_state["file_contents"]['cv']['work_experience']
+                st.session_state.education_curr = st.session_state["file_contents"]['cv']['education']
+                st.session_state.project_curr = st.session_state["file_contents"]['cv']['project']
+                st.session_state.skills_curr = st.session_state["file_contents"]['cv']['skills']
+    
+    if uploaded_file:
+        st.session_state.uploaded_file = uploaded_file
+            
+        if st.session_state["file_contents"]:
 
+            st.session_state.summary_curr = st.session_state["file_contents"]['cv']['summary']
+            st.session_state.work_experience_curr = st.session_state["file_contents"]['cv']['work_experience']
+            st.session_state.education_curr = st.session_state["file_contents"]['cv']['education']
+            st.session_state.project_curr = st.session_state["file_contents"]['cv']['project']
+            st.session_state.skills_curr = st.session_state["file_contents"]['cv']['skills']
            
-            # You can add any further processing or display of the file contents here
-            st.success("File processed successfully!")
             # Displaying the CV data in a table format using Streamlit
             
             def format_description(description_list):
@@ -135,11 +153,15 @@ def show_main_content():
                 formatted = '\n'.join(f"- {desc}" for desc in description_list)
                 return formatted
             
-            if st.button('Save'):
+            cols_nav = st.columns([6,2,1,1])
+            if cols_nav[2].button('Save'):
                 save_details()
+            
+                if st.session_state.cv_details:
+                    cols_nav[3].page_link('pages\Cover_Letter.py', label="Next")
 
             st.subheader("Let AI Boost Your CV for Your Internship")
-                 
+
             # ***************** SUMMARY *****************
             st.header("Summary")
             summary = st.session_state["file_contents"]['cv']['summary']
@@ -215,7 +237,7 @@ def show_main_content():
             
             if 'summary' in st.session_state:
                 st.session_state.summary_curr['summary'] = st.session_state["summary"]
-            st.write(st.session_state.summary_curr)
+            
             
             
             # ***************** WORK EXPERIENCE *****************
@@ -262,7 +284,9 @@ def show_main_content():
                         cols2[0].write(description.capitalize() + ":")
                         cols2[1].write(work_experience)
                         with cols2[2]:
-                            st.button('➕', on_click=lambda d={'data': work_experience_result, 'key': key, 'description': format_description(work_experience)}: update_work_experience(d), key=key+description)
+                            if st.button('➕', on_click=lambda d={'data': work_experience_result, 'key': key, 'description': format_description(work_experience)}: update_work_experience(d), key=key+description):
+                                st.session_state.work_experience_curr[experience_counter]['description'] = format_description(work_experience)
+                
                 elif key in st.session_state:
                     print(st.session_state[key])
                     st.session_state["code_executed"] = True
@@ -292,11 +316,11 @@ def show_main_content():
                         cols2[1].write(work_experience)
                         with cols2[2]:
                             if st.button('➕', on_click=lambda d={'data': work_experience_result, 'key': key, 'description': format_description(work_experience)}: update_work_experience(d), key=key+description):
-                                st.session_state["file_contents"]['cv']['work_experience'][experience_counter]['description'] = format_description(work_experience)
+                                st.session_state.work_experience_curr[experience_counter]['description'] = format_description(work_experience)
 
                 experience_counter += 1
-                
-            # Education
+            
+            # ******************** EDUCATION ********************
             st.header("Education")
             education_counter = 0
             for edu in st.session_state["file_contents"]['cv']['education']:
@@ -335,13 +359,15 @@ def show_main_content():
                         </style>
                         """, unsafe_allow_html=True)
 
-                    # Display the summaries and buttons
+                    # Display the description and buttons
                     for description, education in education_result["education_ai_result"].items():
                         cols2 = st.columns([2, 5, 1])
                         cols2[0].write(description.capitalize() + ":")
                         cols2[1].write(education)
                         with cols2[2]:
-                            st.button('➕', on_click=lambda d={'data': education_result, 'key': key, 'description': format_description(education)}: update_education(d), key=key+description)
+                            if st.button('➕', on_click=lambda d={'data': education_result, 'key': key, 'description': format_description(education)}: update_education(d), key=key+description):
+                                st.session_state.education_curr[experience_counter]['description'] = format_description(education)
+                
                 elif key in st.session_state:
                     print(st.session_state[key])
                     st.session_state["code_executed"] = True
@@ -371,10 +397,11 @@ def show_main_content():
                         cols2[1].write(education)
                         with cols2[2]:
                             if st.button('➕', on_click=lambda d={'data': education_result, 'key': key, 'description': format_description(education)}: update_education(d), key=key+description):
-                                st.session_state["file_contents"]['cv']['education'][experience_counter]['description'] = format_description(work_experience)
+                                st.session_state.education_curr[experience_counter]['description'] = format_description(education)
                 
                 education_counter += 1
-
+            
+            # ***************** PROJECT ***************
             st.header("Projects")
             project_counter = 0
             for project in st.session_state["file_contents"]['cv']['project']:
@@ -385,6 +412,7 @@ def show_main_content():
                 st.text(f"Date: {project['date']}")
                 st.text("Description:")
                 formatted_description = format_description(project['description'])
+                
                 cols = st.columns([4, 1, 1])
                 if key not in st.session_state:    
                     project_text = cols[0].text_area(label="", value=formatted_description, key=f"project_{project['project_name']}_{project['date']}")
@@ -417,7 +445,9 @@ def show_main_content():
                         cols2[0].write(description.capitalize() + ":")
                         cols2[1].write(project)
                         with cols2[2]:
-                            st.button('➕', on_click=lambda d={'data': project_result, 'key': key, 'description': format_description(project)}: update_project(d), key=key+description)
+                            if st.button('➕', on_click=lambda d={'data': project_result, 'key': key, 'description': format_description(project)}: update_project(d), key=key+description):
+                                st.session_state.project_curr[experience_counter]['description'] = format_description(project)
+                
                 elif key in st.session_state:
                     print(st.session_state[key])
                     st.session_state["code_executed"] = True
@@ -447,11 +477,12 @@ def show_main_content():
                         cols2[1].write(project)
                         with cols2[2]:
                             if st.button('➕', on_click=lambda d={'data': project_result, 'key': key, 'description': format_description(project)}: update_project(d), key=key+description):
-                                st.session_state["file_contents"]['cv']['project'][experience_counter]['description'] = format_description(work_experience)
+                                st.session_state.project_curr[experience_counter]['description'] = format_description(project)
                 
                 project_counter += 1
             
-            # Skills
+            
+            # *************** SKILLS ***************
             st.header("Skills")
             formatted_description = format_description(st.session_state["file_contents"]['cv']['skills'])
             # Use text_area for the summary
@@ -464,7 +495,7 @@ def show_main_content():
             if cols[1].button("Generate AI", key="edit_skill"):
                 st.session_state["code_executed"] = True
                 keyword_text_summary = cols[0].text_input(label="", placeholder="Enter your keywords", key="skill_keywords")
-                skills_result = skills_ai(experience_text, st.session_state["file_contents"]['cv'], keyword_text_skill, st.session_state["job_info"])
+                skills_result = skills_ai(skill_text, st.session_state["file_contents"]['cv'], keyword_text_skill, st.session_state["job_info"])
                 st.markdown("""
                     <style>
                     .stButton button {
@@ -483,15 +514,19 @@ def show_main_content():
                     """, unsafe_allow_html=True)
 
                 # Display the summaries and buttons
+                skill_loop = 0
                 for description, skill in skills_result["skills_ai_result"].items():
                     cols2 = st.columns([2, 5, 1])
                     cols2[0].write(description.capitalize() + ":")
                     cols2[1].write(skill)
+                    skill_loop += 1
                     with cols2[2]:
-                        st.button('➕', on_click=lambda d={'skills_ai_result': skills_result, 'skill': format_description(skill)}: update_skill(d), key=description)
+                        if st.button('➕', on_click=lambda d={'skills_ai_result': skills_result, 'skill': format_description(skill)}: update_skill(d), key=description+str(skill_loop)):
+                            st.session_state.skills_curr = format_description(skill)
+            
             elif 'skill_data' in st.session_state:
                 st.session_state["code_executed"] = True
-                keyword_text_summary = cols[0].text_input(label="", placeholder="Enter your keywords", key="summary_keywords")
+                keyword_text_summary = cols[0].text_input(label="", placeholder="Enter your keywords", key="skill_keywords")
                 skills_result = st.session_state['skill_data']['skills_ai_result']
                 st.markdown("""
                     <style>
@@ -511,24 +546,28 @@ def show_main_content():
                     """, unsafe_allow_html=True)
 
                 # Display the summaries and buttons
+                skill_loop = 0
                 for description, skill in skills_result["skills_ai_result"].items():
                     cols2 = st.columns([2, 5, 1])
                     cols2[0].write(description.capitalize() + ":")
                     cols2[1].write(skill)
+                    skill_loop += 1
                     with cols2[2]:
-                        st.button('➕', on_click=lambda d={'skills_ai_result': skills_result, 'skill': format_description(skill)}: update_skill(d), key=description)
-                # st.write(file_contents)
+                        if st.button('➕', on_click=lambda d={'skills_ai_result': skills_result, 'skill': format_description(skill)}: update_skill(d), key=description+str(skill_loop)):
+                            st.session_state.skills_curr = format_description(skill)
+            
+    
     else:
         st.write("Please upload your CV here.")
     
-    st.write(st.session_state)
 
 # Streamlit UI
 def main():
     # if 'code_executed' not in st.session_state:
         
-        st.write("global", st.session_state)
+        # st.write(st.session_state)
         show_main_content()
+        st.write(st.session_state)
 
 if __name__ == "__main__":
     main()
