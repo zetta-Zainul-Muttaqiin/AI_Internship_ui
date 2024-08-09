@@ -115,64 +115,67 @@ EXPECTED_KEYS = {
     'answer'
 }
 
-list_of_locations = [''] + [
-    'Aachen', 'Aalen', 'Aarhus', 'Aix-en-Provence', 'Albstadt', 'Amiens', 'Amsterdam', 'Annecy', 
-    'Antwerp', 'Augsburg', 'Avranches', 'Bad Homburg', 'Bad Neustadt an der Saale', 'Barberà del Vallès', 
-    'Barcelona', 'Beijing', 'Berlin', 'Bertrange', 'Bielefeld', 'Biot', 'Bobigny', 'Bonn', 'Bordeaux', 
-    'Bornheim', 'Botucatu', 'Boulogne-Billancourt', 'Breda', 'Bremen', 'Bretten', 'Breuil-le-Sec', 
-    'Brognard', 'Brussels', 'Buchloe', 'Buchs', 'Böblingen', 'Bühl', 'Cannes', 'Cassis', 'Cayenne', 
-    'Cesson-Sévigné', 'Cham', 'Charenton-le-Pont', "Charmes-sur-l'Herbasse", 'Clamart', 'Clermont-Ferrand', 
-    'Clichy', 'Colmar', 'Cologne', 'Colombes', 'Copenhagen', 'Courbevoie', 'Crailsheim', 'Créteil', 
-    'Dettingen an der Iller', 'Dijon', 'Dingolfing', 'Dortmund', 'Dresden', 'Dudelange', 'Dusseldorf', 
-    'Düsseldorf', 'Eggenstein-Leopoldshafen', 'Eindhoven', 'Eisenach', 'Elchingen', 'Emsbüren', 
-    'Esch-sur-Alzette', 'Eschborn', 'Essen', 'Fleury-Mérogis', 'Fontenay-sous-Bois', 'France', 
-    'Frankfurt', 'Frankfurt am Main', 'Freiburg im Breisgau', 'Freising', 'French Guiana', 
-    'Friville-Escarbotin', 'Fulda', 'Garching', 'Gennevilliers', 'Gerlingen', 'Germany', 'Giengen', 
-    'Girona', 'Gonesse', 'Grenoble', 'Grenzach-Wyhlen', 'Guyancourt', 'Gütersloh', 'Halle (Saale)', 
-    'Hamburg', 'Hanover', 'Hauts-de-Seine', 'Heidenheim', 'Heilbronn', 'Heringsdorf', 'Holzgerlingen', 
-    'Isigny-sur-Mer', 'Issy-les-Moulineaux', 'Italy', 'Japan', 'Jena', 'Karlsruhe', 'Kempten', 'Kiel', 
-    'Korbach', 'Kreuzlingen', 'Kufstein', 'Kusterdingen', 'La Balme-les-Grottes', 'Langgöns', 'Laval', 
-    'Le Kremlin-Bicêtre', 'Le Pré-Saint-Gervais', 'Leiden', 'Leinfelden-Echterdingen', 'Leipzig', 
-    'Les Herbiers', 'Leutkirch im Allgäu', 'Levallois-Perret', 'Lille', 'Limbach-Oberfrohna', 'Limoges', 
-    'Lisbon', 'Lohr a. Main', 'London', 'Ludwigshafen', 'Lussemburgo', 'Luxembourg', 'Lyngby', 'Lyon', 
-    'Madrid', 'Magstadt', 'Mainz', 'Mannheim', 'Marchamalo', 'Marcoussis', 'Marsaz', 'Marseille', 
-    'Martigues', 'Massy', 'Matoury', 'Melsungen', 'Metz', 'Metzingen', 'Mexico', 'Milan', 'Mogliano Veneto', 
-    'Monaco', 'Mondeville', 'Monheim am Rhein', 'Montrouge', 'Munich', 'Murrhardt', 'Möglingen', 'Münster', 
-    'Nanterre', 'Nantes', 'Neuilly-sur-Seine', 'Nice', 'Nidderau', 'Nogent-sur-Marne', 'Nogent-sur-Seine', 
-    'Nuremberg', 'Oberkochen', 'Odense', 'Orleans', 'Pantin', 'Paris', 'Parma', 'Pau', 'Plochingen', 'Poissy', 
-    'Prague', 'Puch bei Hallein', 'Pulnoy', 'Puteaux', 'Radeberg', 'Radolfzell am Bodensee', 'Ramillies', 
-    'Ravensburg', 'Regensburg', 'Rennes', 'Reutlingen', 'Roissy-en-France', 'Rome', 'Rungis', 'Saarbrücken', 
-    'Saint-Etienne', 'Saint-Laurent-Blangy', 'Saint-Maur-des-Fossés', 'Saint-Ouen-sur-Seine', 'Salzburg', 
-    'Salzgitter', 'Schwalbach am Taunus', 'Schwarzheide', 'Sihlbrugg', 'Singapore', 'Sosnowiec', 'Stockport', 
-    'Strasbourg', 'Stuttgart', 'Suresnes', 'Szczecin', 'Teltow', 'Thailand', 'Toulouse', 'Traunreut', 
-    'Trieste', 'Uhingen', 'Ulm', 'União das freguesias de Carnaxide e Queijas', 'Unterföhring', 'Vanves', 
-    'Verberie', 'Verona', 'Vert-le-Grand', 'Vienna', "Villeneuve-d'Ascq", 'Vimercate', 'Vitry-sur-Seine', 
-    'Walldorf', 'Wambrechies', 'Warsaw', 'Weil am Rhein', 'Wiener Neudorf', 'Würzburg', 'Zaventem', 'Zürich', 
-    's-Hertogenbosch', 'Évry-Courcouronnes', 'Świebodzin'
-    ]
+list_of_locations = [''] + ['Aachen', 'Aalen', 'Aarhus', 'Aix-en-Provence', 'Albstadt', 'Amiens', 'Amsterdam', 'Annecy', 'Antwerp', 'Augsburg', 'Avranches', 'Bad Homburg', 'Bad Neustadt an der Saale', 'Barberà del Vallès', 'Barcelona', 'Beijing', 'Berlin', 'Bertrange', 'Bielefeld', 'Biot', 'Bobigny', 'Bonn', 'Bordeaux', 'Bornheim', 'Botucatu', 'Boulogne-Billancourt', 'Breda', 'Bremen', 'Bretten', 'Breuil-le-Sec', 'Brognard', 'Brussels', 'Buchloe', 'Buchs', 'Böblingen', 'Bühl', 'Cannes', 'Cassis', 'Cayenne', 'Cesson-Sévigné', 'Cham', 'Charenton-le-Pont', "Charmes-sur-l'Herbasse", 'Clamart', 'Clermont-Ferrand', 'Clichy', 'Colmar', 'Cologne', 'Colombes', 'Copenhagen', 'Courbevoie', 'Crailsheim', 'Créteil', 'Dettingen an der Iller', 'Dijon', 'Dingolfing', 'Dortmund', 'Dresden', 'Dudelange', 'Dusseldorf', 'Düsseldorf', 'Eggenstein-Leopoldshafen', 'Eindhoven', 'Eisenach', 'Elchingen', 'Emsbüren', 'Esch-sur-Alzette', 'Eschborn', 'Essen', 'Fleury-Mérogis', 'Fontenay-sous-Bois', 'France', 'Frankfurt', 'Frankfurt am Main', 'Freiburg im Breisgau', 'Freising',
+                            'French Guiana', 'Friville-Escarbotin', 'Fulda', 'Garching', 'Gennevilliers', 'Gerlingen', 'Germany', 'Giengen', 'Girona', 'Gonesse', 'Grenoble', 'Grenzach-Wyhlen', 'Guyancourt', 'Gütersloh', 'Halle (Saale)', 'Hamburg', 'Hanover', 'Hauts-de-Seine', 'Heidenheim', 'Heilbronn', 'Heringsdorf', 'Holzgerlingen', 'Isigny-sur-Mer', 'Issy-les-Moulineaux', 'Italy', 'Japan', 'Jena', 'Karlsruhe', 'Kempten', 'Kiel', 'Korbach', 'Kreuzlingen', 'Kufstein', 'Kusterdingen', 'La Balme-les-Grottes', 'Langgöns', 'Laval', 'Le Kremlin-Bicêtre', 'Le Pré-Saint-Gervais', 'Leiden', 'Leinfelden-Echterdingen', 'Leipzig', 'Les Herbiers', 'Leutkirch im Allgäu', 'Levallois-Perret', 'Lille', 'Limbach-Oberfrohna', 'Limoges', 'Lisbon', 'Lohr a. Main', 'London', 'Ludwigshafen', 'Lussemburgo', 'Luxembourg', 'Lyngby', 'Lyon', 'Madrid', 'Magstadt', 'Mainz', 'Mannheim', 'Marchamalo', 'Marcoussis', 'Marsaz', 'Marseille', 'Martigues', 'Massy', 'Matoury', 'Melsungen', 'Metz', 'Metzingen', 'Mexico', 'Milan', 'Mogliano Veneto', 'Monaco', 'Mondeville', 'Monheim am Rhein', 
+                            'Montrouge', 'Munich', 'Murrhardt', 'Möglingen', 'Münster', 'Nanterre', 'Nantes', 'Neuilly-sur-Seine', 'Nice', 'Nidderau', 'Nogent-sur-Marne', 'Nogent-sur-Seine', 'Nuremberg', 'Oberkochen', 'Odense', 'Orleans', 'Pantin', 'Paris', 'Parma', 'Pau', 'Plochingen', 'Poissy', 'Prague', 'Puch bei Hallein', 'Pulnoy', 'Puteaux', 'Radeberg', 'Radolfzell am Bodensee', 'Ramillies', 'Ravensburg', 'Regensburg', 'Rennes', 'Reutlingen', 'Roissy-en-France', 'Rome', 'Rungis', 'Saarbrücken', 'Saint-Etienne', 'Saint-Laurent-Blangy', 'Saint-Maur-des-Fossés', 'Saint-Ouen-sur-Seine', 'Salzburg', 'Salzgitter', 'Schwalbach am Taunus', 'Schwarzheide', 'Sihlbrugg', 'Singapore', 'Sosnowiec', 'Stockport', 'Strasbourg', 'Stuttgart', 'Suresnes', 'Szczecin', 'Teltow', 'Thailand', 'Toulouse', 'Traunreut', 'Trieste', 'Uhingen', 'Ulm', 'União das freguesias de Carnaxide e Queijas', 'Unterföhring', 'Vanves', 'Verberie', 'Verona', 'Vert-le-Grand', 'Vienna', "Villeneuve-d'Ascq", 'Vimercate', 'Vitry-sur-Seine', 'Walldorf', 'Wambrechies', 'Warsaw', 'Weil am Rhein', 'Wiener Neudorf', 'Würzburg', 'Zaventem', 'Zürich', 's-Hertogenbosch', 'Évry-Courcouronnes', 'Świebodzin']
 
-list_of_category = [''] +[
-    "Accounting", "Advertising", "Aerospace Engineering", "Agricultural Engineering", "Agriculture",
-    "Air Traffic Controller", "Animal Science", "Anthropology", "Archaeology", "Architecture",
-    "Art History", "Arts", "Astronomy", "Aviation", "Banking", "Biochemistry", "Biology", "Biomedical Engineering",
-    "Biotechnology", "Botany", "Broadcasting", "Business", "Business Administration", "Chemical Engineering",
-    "Chemistry", "Civil Engineering", "Communication", "Computer Engineering", "Computer Science",
-    "Construction Management", "Creative Writing", "Criminal Justice", "Criminology", "Culinary Arts", "Dance",
-    "Dentistry", "Design", "Drama", "Economics", "Education", "Electrical Engineering", "Engineering", "English",
-    "Environmental Engineering", "Environmental Science", "Fashion Design", "Film", "Finance", "Fine Arts",
-    "Food Science", "Forestry", "Geography", "Geology", "Graphic Design", "Health Science", "History", "Hospitality",
-    "Human Resources", "Industrial Engineering", "Information Technology", "International Relations", "Journalism",
-    "Landscape Architecture", "Law", "Linguistics", "Literature", "Management", "Marketing", "Mathematics", "Mechanical Engineering",
-    "Media", "Medicine", "Microbiology", "Music", "Nursing", "Nutrition", "Occupational Therapy", "Oceanography",
-    "Performing Arts", "Pharmaceutical Sciences", "Philosophy", "Photography", "Physical Therapy", "Physics",
-    "Political Science", "Psychology", "Public Administration", "Public Health", "Public Relations", "Real Estate",
-    "Recreation", "Religious Studies", "Robotics", "Social Work", "Sociology", "Software Engineering", "Sports Management",
-    "Statistics", "Teaching", "Theology", "Tourism", "Urban Planning", "Veterinary Medicine", "Zoology"
-]
+list_of_category = [''] +['Actuarial', 'Admin', 'Agronomy & Biology', 'Asset Management', 'Audit', 'Chemistry & Processes', 'Civil Engineering & Structures', 'Communication, PR & Events', 'Construction', 'Corporate Finance', 'Corporate law', 'Customer service', 'Design & Creative', 'Economics', 'Education & Training', 'Electronics & Signal Processing', 'Energy, Materials & Mechanical engineering', 'Environment & Sustainable Development', 'Financial Services', 'Human Resources', 'IT Project, Data & Product Management', 'Industrial Design & Engineering', 'Infrastructures, Networks & Telecom', 'Journalism & Publishing', 'Logistics & Supply Chain', 'Management Control and Accounting', 'Management, Consulting & Strategy', 'Marketing & Webmarketing', 'Media', 'Paramedical & Care', 'Production & Operations', 'Programming', 'Purchasing', 'Quality & Maintenance', 'Sales & Business Development', 'Security & Politics', 'Social Law', 'Statistics, Data Analytics & Applied Maths', 'Tax law', 'Tourism, Hospitality & Food services', 'Web Design & Usability']
 
-list_of_education = [''] +['BAC', 'BAC +2', 'BAC +3', 'BAC +4', 'BAC +5', 'No Level Prerequired']
+list_of_education = [''] +['BAC +5', 'nan', 'BAC +3', 'BAC +2', 'No Level Prerequired', 'BAC']
 
 list_of_durations = [''] +['2 months', '3 months', '4 months', '6 months']
+
+CV = {
+    "cv": {
+            "summary": {
+                "email": "josephdiva2@gmail.com",
+                "location": "",
+                "name": "Josephine Diva",
+                "phone": "089618587103",
+                "summary": "My name is Josephine, and I am passionate about artificial intelligence (AI) and software development. With two years of experience in software development using Java, as well as nearly a year of experience with Python, I have been involved in various projects ranging from desktop applications to machine learning algorithm implementations. I believe that AI has great potential to change the world, and I am committed to continuously expanding my knowledge and skills in this field to create innovative and empowering technological solutions."
+            },
+            "work_experience": [
+                {
+                    "company_name": "ID/X Partners x Rakamin Academy",
+                    "date": "Oct 2023 - Nov 2023",
+                    "description": [
+                        "During the execution of the Project Based Internship program, I had the opportunity to gain insights into the role of a Data Engineer at ID/X Partners. I also learned how to solve problems and work on projects aligned with the activities of ID/X Partners."
+                    ],
+                    "job_title": "Data Engineer Intern"
+                },
+                {
+                    "company_name": "Bangkit Academy led by Google, Tokopedia, Gojek, & Traveloka",
+                    "date": "Feb 2023 - Jul 2023",
+                    "description": [
+                        "Bangkit is offered as a Kampus Merdeka’s Studi Independen Bersertifikat program supported by the Ministry of Education, Culture, Research and Technology of the Republic of Indonesia. Throughout 2 (two) semesters, we are enrolling at minimum 9,000 university students across 3 learning paths to help them grow in-demand skills in tech and prepare them to take Google’s certification."
+                    ],
+                    "job_title": "Machine Learning Cohort"
+                }
+            ],
+            "education": [
+                {
+                    "date": "Aug 2020 - Dec 2024",
+                    "degree_major": "Bachelor's Degree in Informatics",
+                    "description": [],
+                    "school_name": "Sanata Dharma University",
+                    "score": ""
+                }
+            ],
+            "project": [],
+            "skills": [
+                "Computer Vision",
+                "Natural Language Processing (NLP)",
+                "Convolutional Neural Networks (CNN)",
+                "Golang Fundamental",
+                "SQL Basic",
+                "SQL Operation",
+                "OLAP Data Modeling",
+                "ETL & ELT",
+                "Data Warehouse Scheduling",
+                "Data Warehouse Management"
+            ]
+        }
+    }
 
 LOGGER.info("Setup Done")
 

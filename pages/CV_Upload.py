@@ -3,61 +3,14 @@ import os
 import pandas as pd
 from cv_upload import cv_extractor
 from cv_generator import summary_ai, work_experience_ai, education_ai, project_ai, skills_ai
+from job_recommend import get_selected_description
+from setup import CV
 
 os.environ['Path'] = r'poppler-24.02.0\Library\bin'
 api_config = st.secrets["api"]
 openai_api_key = api_config["openai_api_key"]
 os.environ['OPENAI_API_KEY'] = openai_api_key
 
-CV = {
-        "summary": {
-            "email": "josephdiva2@gmail.com",
-            "location": "",
-            "name": "Josephine Diva",
-            "phone": "089618587103",
-            "summary": "My name is Josephine, and I am passionate about artificial intelligence (AI) and software development. With two years of experience in software development using Java, as well as nearly a year of experience with Python, I have been involved in various projects ranging from desktop applications to machine learning algorithm implementations. I believe that AI has great potential to change the world, and I am committed to continuously expanding my knowledge and skills in this field to create innovative and empowering technological solutions."
-        },
-        "work_experience": [
-            {
-                "company_name": "ID/X Partners x Rakamin Academy",
-                "date": "Oct 2023 - Nov 2023",
-                "description": [
-                    "During the execution of the Project Based Internship program, I had the opportunity to gain insights into the role of a Data Engineer at ID/X Partners. I also learned how to solve problems and work on projects aligned with the activities of ID/X Partners."
-                ],
-                "job_title": "Data Engineer Intern"
-            },
-            {
-                "company_name": "Bangkit Academy led by Google, Tokopedia, Gojek, & Traveloka",
-                "date": "Feb 2023 - Jul 2023",
-                "description": [
-                    "Bangkit is offered as a Kampus Merdeka’s Studi Independen Bersertifikat program supported by the Ministry of Education, Culture, Research and Technology of the Republic of Indonesia. Throughout 2 (two) semesters, we are enrolling at minimum 9,000 university students across 3 learning paths to help them grow in-demand skills in tech and prepare them to take Google’s certification."
-                ],
-                "job_title": "Machine Learning Cohort"
-            }
-        ],
-        "education": [
-            {
-                "date": "Aug 2020 - Dec 2024",
-                "degree_major": "Bachelor's Degree in Informatics",
-                "description": [],
-                "school_name": "Sanata Dharma University",
-                "score": ""
-            }
-        ],
-        "project": [],
-        "skills": [
-            "Computer Vision",
-            "Natural Language Processing (NLP)",
-            "Convolutional Neural Networks (CNN)",
-            "Golang Fundamental",
-            "SQL Basic",
-            "SQL Operation",
-            "OLAP Data Modeling",
-            "ETL & ELT",
-            "Data Warehouse Scheduling",
-            "Data Warehouse Management"
-        ]
-    }
 def displayed_job_adapt():
     st.session_state["job_adapt"] = {
         'job_role': st.session_state["job_details"]['job_role'],
@@ -129,7 +82,7 @@ def show_main_content():
         if st.session_state["job_info"]["job_url"] != "":
             job_url = st.session_state["job_info"]["job_url"]
             st.session_state["job_details"] = get_selected_description(job_url)
-            print("DETAILS:", st.session_state["job_details"])
+            
             st.session_state["job_adapt"] = {
                 'job_role': st.session_state["job_details"]['job_role'],
                 'location': st.session_state["job_details"]['location'],
@@ -139,7 +92,6 @@ def show_main_content():
             }
     if "file_contents" not in st.session_state:
         st.session_state["file_contents"] = ""
-        st.write("global", st.session_state)
         st.title("LeBon Stage")
     
     if 'job_details' in st.session_state:
@@ -148,17 +100,30 @@ def show_main_content():
         st.sidebar.write("No job details available.")
 
     # File uploader
-    if 'uploaded_file' not in st.session_state.upload_file:
-        st.session_state.uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
+    uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
+    if st.session_state["file_contents"] == "":
+        st.write("cv_already_extract")
+        st.session_state["file_contents"] = CV
 
-    if st.session_state["uploaded_file"]:
+        st.session_state.summary_curr = st.session_state["file_contents"]['cv']['summary']
+        st.session_state.work_experience_curr = st.session_state["file_contents"]['cv']['work_experience']
+        st.session_state.education_curr = st.session_state["file_contents"]['cv']['education']
+        st.session_state.project_curr = st.session_state["file_contents"]['cv']['project']
+        st.session_state.skills_curr = st.session_state["file_contents"]['cv']['skills']
+    
+    if uploaded_file:
         # Save the uploaded file to disk
-        file_path = save_uploaded_file(st.session_state["uploaded_file"])
+        file_path = save_uploaded_file(uploaded_file)
         with st.spinner("Processing your CV..."):
             # Process the uploaded PDF file
-            if "file_contents" not in st.session_state:
-                st.write("cv_extract")
-                st.session_state["file_contents"] = CV #cv_extractor(file_path)
+            st.write("cv_extracted")
+            st.session_state["file_contents"] = CV #cv_extractor(file_path)
+            
+            st.session_state.summary_curr = st.session_state["file_contents"]['cv']['summary']
+            st.session_state.work_experience_curr = st.session_state["file_contents"]['cv']['work_experience']
+            st.session_state.education_curr = st.session_state["file_contents"]['cv']['education']
+            st.session_state.project_curr = st.session_state["file_contents"]['cv']['project']
+            st.session_state.skills_curr = st.session_state["file_contents"]['cv']['skills']
 
            
             # You can add any further processing or display of the file contents here
@@ -174,21 +139,18 @@ def show_main_content():
                 save_details()
 
             st.subheader("Let AI Boost Your CV for Your Internship")
-
-            # Displaying the CV data in a table format using Streamlit
-            # Summary
+                 
+            # ***************** SUMMARY *****************
             st.header("Summary")
             summary = st.session_state["file_contents"]['cv']['summary']
+            
             # Use text_area for the summary
             keyword_text_summary = ""
             st.text(f"Name: {summary['name']}")
             st.text(f"Location: {summary['location']}")
             st.text(f"Phone: {summary['phone']}")
             st.text(f"Email: {summary['email']}")
-            st.session_state["summary_name"] = summary['name']
-            st.session_state["summary_location"] = summary['location']
-            st.session_state["summary_phone"] = summary['phone']
-            st.session_state["summary_email"] = summary['name']
+
             cols = st.columns([4, 1, 1])
             if 'summary_data' not in st.session_state:
                 summary_text = cols[0].text_area(label="", value=summary['summary'], key="summary")    
@@ -252,20 +214,14 @@ def show_main_content():
                         st.button('➕', on_click=lambda d={'summary_ai_result': summary_ai_result, 'summary': summary}: update_summary(d), key=description)
             
             if 'summary' in st.session_state:
-                st.session_state["summary_current"] = {
-                    "Name": st.session_state["summary_name"],
-                    "Location": st.session_state["summary_location"],
-                    "Phone": st.session_state["summary_phone"],
-                    "Email": st.session_state["summary_email"],
-                    "summary": st.session_state["summary"]
-                }
-                st.session_state["file_contents"]['cv']['summary'] = st.session_state = st.session_state["summary_current"]
-
+                st.session_state.summary_curr['summary'] = st.session_state["summary"]
+            st.write(st.session_state.summary_curr)
             
-            # Work Experience
+            
+            # ***************** WORK EXPERIENCE *****************
             st.header("Work Experience")
             experience_counter = 0
-            for experience in st.session_state["file_contents"]['cv']['work_experience']:
+            for experience in st.session_state['file_contents']['cv']['work_experience']:
                 key = "work_experience" + str(experience_counter)
                 keyword_text_experience = ""
                 st.subheader(experience['company_name'])
@@ -570,6 +526,8 @@ def show_main_content():
 # Streamlit UI
 def main():
     # if 'code_executed' not in st.session_state:
+        
+        st.write("global", st.session_state)
         show_main_content()
 
 if __name__ == "__main__":

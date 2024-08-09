@@ -54,7 +54,7 @@ def get_selected_description(job_url):
             'job_url': job_url
         }
     )
-
+    print("RESULT:", get_one_details)
     return get_one_details['data']['document']
 
 def set_sending_data(table, table_v2):
@@ -73,10 +73,10 @@ def set_sending_data(table, table_v2):
     for document in table:
         # ****** Create a dictionary for each job with the required fields ******
         data_field = {
-            "job_id": document['_id'],
+            "job_url": document['job_url'],
             "job_role": document['job_role'],
             "location": document['location'],
-            "job_category": document['categories'],
+            "job_category": document['job_category'],
             "education_level": document['standardized_level'],
             "job_contract": document['job_contract'],
             "description": document['summary'],
@@ -88,11 +88,11 @@ def set_sending_data(table, table_v2):
         for document_v2 in table_v2:
             # ****** Create a dictionary for each job with the required fields ******
             data_field = {
-                "job_id": document_v2['_id'],
+                "job_url": document_v2['job_url'],
                 "similarity": document_v2['$similarity'],
                 "job_role": document_v2['job_role'],
                 "location": document_v2['location'],
-                "job_category": document_v2['categories'],
+                "job_category": document_v2['job_category'],
                 "education_level": document_v2['standardized_level'],
                 "job_contract": document_v2['job_contract'],
                 "description": document_v2['summary'],
@@ -150,7 +150,7 @@ def run_vector_search(query):
     Returns:
         dict: A dictionary containing the list of recommended jobs.
     """
-
+    print("QUE:",query)
     joined_query, search_filter = create_filter(query)
 
     # ****** Search for similar job postings ******

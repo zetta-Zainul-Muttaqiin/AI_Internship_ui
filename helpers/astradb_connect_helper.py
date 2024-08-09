@@ -35,3 +35,16 @@ def get_astradb_collection():
     except Exception as e:
         # ****** Handle exceptions ******
         raise ConnectionError(f"Failed to connect to AstraDB: {e}")
+    
+def get_astradb_description():
+    try:
+        astrapy = AstraDB(
+                token=ASTRADB_TOKEN_KEY,
+                api_endpoint=ASTRADB_API_ENDPOINT,
+                namespace=ASTRADB_NAMESPACE_NAME)
+        astrapy_descriptionn = astrapy.collection(collection_name="descriptions_detail")
+        return astrapy_descriptionn
+
+    except Exception as e:
+        # ****** Handle exceptions ******
+        raise ConnectionError(f"Failed to connect to AstraDB description: {e}")
