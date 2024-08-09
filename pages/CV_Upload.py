@@ -149,7 +149,8 @@ def show_main_content():
         st.sidebar.write("No job details available.")
 
     # File uploader
-    st.session_state["uploaded_file"] = st.file_uploader("Choose a PDF file", type="pdf")
+    if 'uploaded_file' not in st.session_state.upload_file:
+        st.session_state.uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 
     if st.session_state["uploaded_file"]:
         # Save the uploaded file to disk
