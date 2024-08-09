@@ -1,8 +1,7 @@
 import streamlit as st
 from cover_letter import cover_letter_creation
-from setup import predefined_cvs
 from pages.CV_Upload import displayed_job_adapt
-from setup import CV
+from setup import predefined_cvs, CV
 
 def run_streamlit_app():
 
@@ -27,18 +26,21 @@ def run_streamlit_app():
         st.sidebar.write("No job details available.")
 
     # ********* Keywords Input *********
-    keywords = st.sidebar.text_area("Enter keywords for the cover letter order", height=50)
+    keywords = st.sidebar.text_area("Enter keywords for the cover letter order", height=25)
 
     # ********* Generate Cover Letter Button *********
     if st.sidebar.button("Generate Cover Letter"):
         
         if not cv_content:
             st.sidebar.error("Please select a CV.")
-        elif "job_info" not in st.session_state:
+        elif "job_adapt" not in st.session_state:
             st.sidebar.error("Please provide job information.")
         else:
+            if "job_adapt" in st.session_state:
+                if st.session_state.job_adapt == "":
+                    st.sidebar.error("Job Information Not Found.")
             try:
-                result = cover_letter_creation(cv_content, st.session_state["job_info"], keywords)
+                result = cover_letter_creation(cv_content, st.session_state["job_adapt"]["description"], keywords)
                 st.subheader("Generated Cover Letter")
                 st.write(result["cover_letter_ai"])
             except KeyError as e:
@@ -103,9 +105,11 @@ def run_streamlit_app():
         st.subheader("Cover Letter")
         if 'result' in locals():
             st.text_area("Cover Letter", result["cover_letter_ai"], height=400)
-
+    
+    if 'result' in locals():
+        st.sidebar.page_link('pages\Flashcard.py', label="Next Flashcard")
 # *************** RUN STREAMLIT APP ***************
 if __name__ == "__main__":
-    st.write(st.session_state)
+    # st.write(st.session_state)
     run_streamlit_app()
-    st.write(st.session_state)
+    # st.write(st.session_state)

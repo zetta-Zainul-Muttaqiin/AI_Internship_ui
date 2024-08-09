@@ -111,8 +111,9 @@ PAYLOAD_TYPE = {
 }
 
 EXPECTED_KEYS = {
+    'category',
     'question',
-    'answer'
+    'suggest_answer'
 }
 
 list_of_locations = [''] + ['Aachen', 'Aalen', 'Aarhus', 'Aix-en-Provence', 'Albstadt', 'Amiens', 'Amsterdam', 'Annecy', 'Antwerp', 'Augsburg', 'Avranches', 'Bad Homburg', 'Bad Neustadt an der Saale', 'Barberà del Vallès', 'Barcelona', 'Beijing', 'Berlin', 'Bertrange', 'Bielefeld', 'Biot', 'Bobigny', 'Bonn', 'Bordeaux', 'Bornheim', 'Botucatu', 'Boulogne-Billancourt', 'Breda', 'Bremen', 'Bretten', 'Breuil-le-Sec', 'Brognard', 'Brussels', 'Buchloe', 'Buchs', 'Böblingen', 'Bühl', 'Cannes', 'Cassis', 'Cayenne', 'Cesson-Sévigné', 'Cham', 'Charenton-le-Pont', "Charmes-sur-l'Herbasse", 'Clamart', 'Clermont-Ferrand', 'Clichy', 'Colmar', 'Cologne', 'Colombes', 'Copenhagen', 'Courbevoie', 'Crailsheim', 'Créteil', 'Dettingen an der Iller', 'Dijon', 'Dingolfing', 'Dortmund', 'Dresden', 'Dudelange', 'Dusseldorf', 'Düsseldorf', 'Eggenstein-Leopoldshafen', 'Eindhoven', 'Eisenach', 'Elchingen', 'Emsbüren', 'Esch-sur-Alzette', 'Eschborn', 'Essen', 'Fleury-Mérogis', 'Fontenay-sous-Bois', 'France', 'Frankfurt', 'Frankfurt am Main', 'Freiburg im Breisgau', 'Freising',

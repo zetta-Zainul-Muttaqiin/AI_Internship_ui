@@ -84,7 +84,8 @@ def show_main_content():
         if st.session_state["job_info"]["job_url"] != "":
             job_url = st.session_state["job_info"]["job_url"]
             st.session_state["job_details"] = get_selected_description(job_url)
-            
+            if not st.session_state["job_details"]:
+                st.error("Internship Offer already close the regristation")
             st.session_state["job_adapt"] = {
                 'job_role': st.session_state["job_details"]['job_role'],
                 'location': st.session_state["job_details"]['location'],
@@ -140,11 +141,11 @@ def show_main_content():
             
         if st.session_state["file_contents"]:
 
-            st.session_state.summary_curr = st.session_state["file_contents"]['cv']['summary']
-            st.session_state.work_experience_curr = st.session_state["file_contents"]['cv']['work_experience']
-            st.session_state.education_curr = st.session_state["file_contents"]['cv']['education']
-            st.session_state.project_curr = st.session_state["file_contents"]['cv']['project']
-            st.session_state.skills_curr = st.session_state["file_contents"]['cv']['skills']
+            # st.session_state.summary_curr = st.session_state["file_contents"]['cv']['summary']
+            # st.session_state.work_experience_curr = st.session_state["file_contents"]['cv']['work_experience']
+            # st.session_state.education_curr = st.session_state["file_contents"]['cv']['education']
+            # st.session_state.project_curr = st.session_state["file_contents"]['cv']['project']
+            # st.session_state.skills_curr = st.session_state["file_contents"]['cv']['skills']
            
             # Displaying the CV data in a table format using Streamlit
             
@@ -236,6 +237,7 @@ def show_main_content():
                         st.button('➕', on_click=lambda d={'summary_ai_result': summary_ai_result, 'summary': summary}: update_summary(d), key=description)
             
             if 'summary' in st.session_state:
+                st.toast("updated Work Experience description")
                 st.session_state.summary_curr['summary'] = st.session_state["summary"]
             
             
@@ -285,6 +287,7 @@ def show_main_content():
                         cols2[1].write(work_experience)
                         with cols2[2]:
                             if st.button('➕', on_click=lambda d={'data': work_experience_result, 'key': key, 'description': format_description(work_experience)}: update_work_experience(d), key=key+description):
+                                st.toast("updated Work Experience description")
                                 st.session_state.work_experience_curr[experience_counter]['description'] = format_description(work_experience)
                 
                 elif key in st.session_state:
@@ -316,6 +319,7 @@ def show_main_content():
                         cols2[1].write(work_experience)
                         with cols2[2]:
                             if st.button('➕', on_click=lambda d={'data': work_experience_result, 'key': key, 'description': format_description(work_experience)}: update_work_experience(d), key=key+description):
+                                st.toast("updated Work Experience description")
                                 st.session_state.work_experience_curr[experience_counter]['description'] = format_description(work_experience)
 
                 experience_counter += 1
@@ -366,6 +370,7 @@ def show_main_content():
                         cols2[1].write(education)
                         with cols2[2]:
                             if st.button('➕', on_click=lambda d={'data': education_result, 'key': key, 'description': format_description(education)}: update_education(d), key=key+description):
+                                st.toast("updated Education description")
                                 st.session_state.education_curr[experience_counter]['description'] = format_description(education)
                 
                 elif key in st.session_state:
@@ -397,6 +402,7 @@ def show_main_content():
                         cols2[1].write(education)
                         with cols2[2]:
                             if st.button('➕', on_click=lambda d={'data': education_result, 'key': key, 'description': format_description(education)}: update_education(d), key=key+description):
+                                st.toast("updated Education description")
                                 st.session_state.education_curr[experience_counter]['description'] = format_description(education)
                 
                 education_counter += 1
@@ -446,6 +452,7 @@ def show_main_content():
                         cols2[1].write(project)
                         with cols2[2]:
                             if st.button('➕', on_click=lambda d={'data': project_result, 'key': key, 'description': format_description(project)}: update_project(d), key=key+description):
+                                st.toast("updated Project description")
                                 st.session_state.project_curr[experience_counter]['description'] = format_description(project)
                 
                 elif key in st.session_state:
@@ -477,6 +484,7 @@ def show_main_content():
                         cols2[1].write(project)
                         with cols2[2]:
                             if st.button('➕', on_click=lambda d={'data': project_result, 'key': key, 'description': format_description(project)}: update_project(d), key=key+description):
+                                st.toast("updated Project description")
                                 st.session_state.project_curr[experience_counter]['description'] = format_description(project)
                 
                 project_counter += 1
@@ -522,6 +530,7 @@ def show_main_content():
                     skill_loop += 1
                     with cols2[2]:
                         if st.button('➕', on_click=lambda d={'skills_ai_result': skills_result, 'skill': format_description(skill)}: update_skill(d), key=description+str(skill_loop)):
+                            st.toast("updated Skills")
                             st.session_state.skills_curr = format_description(skill)
             
             elif 'skill_data' in st.session_state:
@@ -554,6 +563,7 @@ def show_main_content():
                     skill_loop += 1
                     with cols2[2]:
                         if st.button('➕', on_click=lambda d={'skills_ai_result': skills_result, 'skill': format_description(skill)}: update_skill(d), key=description+str(skill_loop)):
+                            st.toast("updated Skills")
                             st.session_state.skills_curr = format_description(skill)
             
     
@@ -567,7 +577,6 @@ def main():
         
         # st.write(st.session_state)
         show_main_content()
-        st.write(st.session_state)
 
 if __name__ == "__main__":
     main()

@@ -2,6 +2,10 @@ from langchain import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_community.callbacks import get_openai_callback
+from langchain_core.pydantic_v1 import Field, BaseModel
+from langchain_core.runnables import RunnableParallel
+from operator import itemgetter
+
 
 # *************** IMPORT MODEL ***************
 from models.llms import LLMModels
@@ -14,8 +18,16 @@ from validator.flashcard_payload_checker import (
     validate_qna_list,
 )
 
+class FlashcardResponse(BaseModel):
+    flashcards: list = Field(description=[{
+        "category": "type of the interview question as technical or soft skill question",
+        "question": "question of the interview",
+        "suggest_answer": "question of the interview"
+        }]
+      )
+    
 # *************** MAIN ***************
-def generate_flashcards(cv, company, job_detail, num_flashcards=5):
+def generate_flashcards(cv, company, job_detail):
     """
     Generate a list of interview flashcards based on the provided CV, company information, and job details.
 
@@ -29,8 +41,7 @@ def generate_flashcards(cv, company, job_detail, num_flashcards=5):
                         Expected keys: 'company_name' and 'company_detail'.
         job_detail (dict): A dictionary containing the job details.
                            Expected keys: 'job_position' and 'job_description'.
-        num_flashcards (int, optional): The number of flashcards to generate. Default is 5.
-
+ 
     Returns:
         dict: A dictionary containing the generated flashcards and token usage information.
               Keys: 'result', 'tokens_in', and 'tokens_out'.
@@ -82,34 +93,40 @@ def generate_flashcards(cv, company, job_detail, num_flashcards=5):
 
     # ***** Define the prompt template
     base_prompt = """
-    I have the following *CV*:
+    I have the following CV details:
+    
     Summary: {summary}
-
+    
     Work Experience:
     {work_experience}
-
+    
     Education:
     {education}
-
+    
     Projects:
     {projects}
-
+    
     Skills:
     {skills}
-
-    I am applying for the position of {job_title} at {company_name}. The *job description* is as follows:
+    
+    I am applying for the position of {job_title} at {company_name}. The job description is:
     {job_description}
-
-    *Company Profile*:
+    
+    Company Profile:
     {company_detail}
-
-    Please generate a list of {num_flashcards} relevant interview questions and suggested answers in STAR method answering based on my *CV*, *Company Profile*, and the *job description* I am applying.
-    The output should be a Array of JSON objects, each with 'question' and 'answer' fields.
+    
+    Please generate an array of 10 relevant interview questions and suggested answers in STAR method based on my CV, Company Profile, and the job description:
+    
+    - 5 technical skill questions
+    - 5 soft skill questions
+    
+    The output should be an array of JSON objects, following structure:
+    {format_instructions}
     """
 
     # ***** Initialize OpenAI LLM
     llm = LLMModels().llm_cv
-    parser = JsonOutputParser(key="flashcards")
+    parser = JsonOutputParser(pydantic_object=FlashcardResponse)
 
     # ***** Intiate Prompt functionality
     prompt_template = PromptTemplate(
@@ -123,23 +140,36 @@ def generate_flashcards(cv, company, job_detail, num_flashcards=5):
             "company_name",
             "company_detail",
             "job_title",
-            "job_description", 
-            "num_flashcards",
-            ]
+            "job_description",
+            ],
+        partial_variables={"format_instructions": parser.get_format_instructions()}
     )
-
-    # ***** Create the chain with input variables
-    chain = LLMChain(
-        llm=llm,
-        prompt=prompt_template,
-        output_parser=parser
-    )
+    # ********* Setup Runnable Chain
+    runnable_flashcard = RunnableParallel(
+                        {
+                            "summary": itemgetter('summary'),
+                            "work_experience": itemgetter('work_experience'),
+                            "education": itemgetter('education'),
+                            "projects": itemgetter('projects'),
+                            "skills": itemgetter('skills'),
+                            "company_name": itemgetter('company_name'),
+                            "company_detail": itemgetter('company_detail'),
+                            "job_title": itemgetter('job_title'),
+                            "job_description": itemgetter('job_description')
+                        }
+                    )
+    flashcard_chain = ( 
+                runnable_flashcard
+                | prompt_template
+                | llm
+                | parser
+                )
 
     # *************** PROCESS ***************
     # ***** activate tokens track
     with get_openai_callback() as flash_cb:
         # ***** Generate the flashcards
-        response = chain.invoke({
+        response = flashcard_chain.invoke({
             "summary": summary,
             "work_experience": work_experience,
             "education": education,
@@ -148,27 +178,27 @@ def generate_flashcards(cv, company, job_detail, num_flashcards=5):
             "company_name": company_name,
             "company_detail": company_detail,
             "job_title": job_title,
-            "job_description": job_description,
-            "num_flashcards": num_flashcards
+            "job_description": job_description
         })
     
     # *************** OUTPUT ***************
     # ***** validate response is exist and reformat the response as json
-    if 'text' in response:
+    print(response)
+    if 'flashcards' in response:
         flash_card_qa = {
-            "result": response['text'],
+            "result": response['flashcards'],
             "tokens_in": flash_cb.prompt_tokens,
             "tokens_out": flash_cb.completion_tokens
             }
     else:
-        raise KeyError("Response not contains list of questions and answers")
+        raise KeyError("Response not contains list of questions and suggest_answer")
 
     # ***** validate each list of response is a json with question and answer
     if validate_qna_list(flash_card_qa["result"]):
         return flash_card_qa
    
     else:
-        raise ValueError("Response is not a valid list of objects with 'question' and 'answer' fields")
+        raise ValueError("Response is not a valid list of objects with 'category', 'question' and 'suggest_answer' fields")
 
 
 if __name__ == '__main__':
