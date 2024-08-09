@@ -79,8 +79,9 @@ if st.button("Search") and st.session_state["query"] != curr_query:
     # Run the vector search process
     st.session_state["results"] = run_vector_search(st.session_state["query"])
         
-columns_get = [
-        "job_url", "job_role", "job_category", "location", 
+
+columns_to_display = [
+        "job_role", "job_category", "location", 
         "education_level", "job_contract", "description"
     ]
 displayed = [
@@ -98,7 +99,7 @@ if ('data' in st.session_state["results"]) or ('data_recommend' in st.session_st
         # Selecting relevant columns for display
         print("COLUMNS: ", df.columns)
         # Ensuring columns exist in the DataFrame
-        valid_columns = [col for col in columns_get if col in df.columns]
+        valid_columns = [col for col in columns_to_display if col in df.columns]
 
         if valid_columns:
             df_display = df[valid_columns]
@@ -110,9 +111,8 @@ if ('data' in st.session_state["results"]) or ('data_recommend' in st.session_st
             ]
                
         # Displaying the DataFrame with select buttons
-            
             data_display = st.dataframe(
-                df_display[displayed],
+                df_display,
                 on_select='rerun',
                 selection_mode=["single-row"],
                 key="list_data"
@@ -121,16 +121,13 @@ if ('data' in st.session_state["results"]) or ('data_recommend' in st.session_st
             if len(data_display.selection['rows']):
                 selected_row = data_display.selection['rows'][0]
                 job_role = df_display.iloc[selected_row]['Job Role']
-                job_url = df_display.iloc[selected_row]['job_url']
 
                 st.write("Selected data: ", len(data_display.selection['rows']))
                 st.session_state["job_info"] = {
                     'job_url': job_url,
                     'job_role': job_role
                     }
-               
                 st.page_link('pages/CV_Upload.py', label=f"Apply as {job_role}")
-                    
 
     else:
         st.text("No internships matched your keyword.")
@@ -143,7 +140,7 @@ if ('data' in st.session_state["results"]) or ('data_recommend' in st.session_st
         data_recom = results["data_recommend"]
         df_recom = pd.DataFrame(data_recom)
 
-        valid_columns_recomm = [col for col in columns_get if col in df_recom.columns]
+        valid_columns_recomm = [col for col in columns_to_display if col in df_recom.columns]
 
         if valid_columns_recomm:
             df_display_recomm = df_recom[valid_columns_recomm]

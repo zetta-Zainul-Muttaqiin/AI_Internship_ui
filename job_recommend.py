@@ -73,7 +73,7 @@ def set_sending_data(table, table_v2):
     for document in table:
         # ****** Create a dictionary for each job with the required fields ******
         data_field = {
-            "job_url": document['job_url'],
+            "job_id": document['_id'],
             "job_role": document['job_role'],
             "location": document['location'],
             "job_category": document['categories'],
@@ -88,7 +88,7 @@ def set_sending_data(table, table_v2):
         for document_v2 in table_v2:
             # ****** Create a dictionary for each job with the required fields ******
             data_field = {
-                "job_url": document_v2['job_url'],
+                "job_id": document_v2['_id'],
                 "similarity": document_v2['$similarity'],
                 "job_role": document_v2['job_role'],
                 "location": document_v2['location'],
@@ -169,5 +169,4 @@ def run_vector_search(query):
 
 if __name__ == "__main__":
 
-    result = get_selected_description("https://www.jobteaser.com/en/job-offers/350a01a1-6138-4ba8-9a97-d9a665acb1b5-clearstream-luxembourg-deutsche-borse-group-intern-product-marketing-f-m-d")
-    print(type(result), result)
+    run_vector_search("marketing")

@@ -3,7 +3,6 @@ import os
 import pandas as pd
 from cv_upload import cv_extractor
 from cv_generator import summary_ai, work_experience_ai, education_ai, project_ai, skills_ai
-from job_recommend import get_selected_description
 
 os.environ['Path'] = r'poppler-24.02.0\Library\bin'
 api_config = st.secrets["api"]
