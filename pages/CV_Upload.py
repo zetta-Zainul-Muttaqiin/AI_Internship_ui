@@ -151,7 +151,7 @@ def show_main_content():
                 save_details()
             
                 if st.session_state.cv_details:
-                    cols_nav[3].page_link('pages\Cover_Letter.py', label="Next")
+                    cols_nav[3].page_link(r'pages/Cover_Letter.py', label="Next")
 
             st.subheader("Let AI Boost Your CV for Your Internship")
 

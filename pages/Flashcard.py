@@ -126,7 +126,7 @@ def run_streamlit_app():
         for skill in skill_list:
             skills.markdown(f"- {skill}")
     
-    st.sidebar.page_link('pages\Cover_Letter.py', label="Back to Cover Letter")
+    st.sidebar.page_link(r'pages/Cover_Letter.py', label="Back to Cover Letter")
 
 # *************** RUN STREAMLIT APP ***************
 if __name__ == "__main__":

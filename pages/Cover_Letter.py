@@ -48,7 +48,7 @@ def run_streamlit_app():
             except Exception as e:
                 st.error(f"An unexpected error occurred: {str(e)}")
     
-    st.sidebar.page_link('pages\CV_Upload.py', label="Back to CV Upload")
+    st.sidebar.page_link(r'pages/CV_Upload.py', label="Back to CV Upload")
 
     # ********* Layout for Displaying CV and Cover Letter *********
     col1, col2 = st.columns([1, 1])
@@ -110,7 +110,7 @@ def run_streamlit_app():
             st.text_area("Cover Letter", result["cover_letter_ai"], height=400)
     
     if 'result' in locals():
-        st.sidebar.page_link('pages\Flashcard.py', label="Next Flashcard")
+        st.sidebar.page_link(r'pages/Flashcard.py', label="Next Flashcard")
 # *************** RUN STREAMLIT APP ***************
 if __name__ == "__main__":
     # st.write(st.session_state)
