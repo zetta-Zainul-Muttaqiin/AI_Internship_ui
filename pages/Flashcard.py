@@ -125,6 +125,8 @@ def run_streamlit_app():
         skill_list = cv_content['skills']
         for skill in skill_list:
             skills.markdown(f"- {skill}")
+    
+    st.sidebar.page_link('pages\Cover_Letter.py', label="Back to Cover Letter")
 
 # *************** RUN STREAMLIT APP ***************
 if __name__ == "__main__":
