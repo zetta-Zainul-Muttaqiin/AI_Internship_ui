@@ -21,7 +21,6 @@ from validator.cv_payload_checker import (
 # *************** ENVIRONMENT LOAD ***************
 from setup import REQUIRED_FIELDS
 
-
 # ********** Define Pydantic models for structured data handling
 class SummaryAnswer(BaseModel):
     recommended: str = Field(description="A well-balanced summary that aligns closely with the input, providing a concise yet comprehensive overview.")
@@ -29,18 +28,51 @@ class SummaryAnswer(BaseModel):
     extended: str = Field(description="A detailed and elaborative summary, expanding on the input to provide a thorough explanation.")
 
 class SkillsResult(BaseModel):
-    recommended: list[str] = Field(description="array of well-balanced skills descriptions that aligns closely with the input, providing a concise yet comprehensive overview.")
-    simplified: list[str] = Field(description="array of shortened version of the skills descriptions, minimizing details to present the core information succinctly.")
-    extended: list[str] = Field(description="array of detailed and elaborative skills descriptions, expanding on the input to provide a thorough explanation.")
+    recommended: list[str] = Field(description="Array of well-balanced skills descriptions that aligns closely with the input, providing a concise yet comprehensive overview.")
+    simplified: list[str] = Field(description="Array of shortened version of the skills descriptions, minimizing details to present the core information succinctly.")
+    extended: list[str] = Field(description="Array of detailed and elaborative skills descriptions, expanding on the input to provide a thorough explanation.")
 
 class DescriptionGenerator(BaseModel):
-    recommended: list[str] = Field(description="array of 3 well-balanced descriptions that aligns closely with the input, providing a concise yet comprehensive overview.")
-    simplified: list[str] = Field(description="array of 3 shortened version of the descriptions, minimizing details to present the core information succinctly.")
-    extended: list[str] = Field(description="array of 3 detailed and elaborative descriptions, expanding on the input to provide a thorough explanation.")
+    recommended: list[str] = Field(description="Well-balanced descriptions that aligns closely with the input, providing a concise yet comprehensive overview.")
+    simplified: list[str] = Field(description="Shortened version of the descriptions, minimizing details to present the core information succinctly.")
+    extended: list[str] = Field(description="Detailed and elaborative descriptions, expanding on the input to provide a thorough explanation.")
+
+class WorkExpereienceResult(BaseModel):
+    recommended: list[str] = Field(description="A concise and well-balanced work experience description that closely aligns with the job's requirements.")
+    simplified: list[str] = Field(description="A shortened version of the work experience description, focusing on core responsibilities and achievements.")
+    extended: list[str] = Field(description="A detailed and elaborative work experience description, providing thorough explanations of key roles, responsibilities, and accomplishments.")
+
+class EducationResult(BaseModel):
+    recommended: list[str] = Field(description="A concise and well-balanced education description that closely aligns with the job's requirements.")
+    simplified: list[str] = Field(description="A shortened version of the education description, focusing on core information.")
+    extended: list[str] = Field(description="A detailed and elaborative education description, providing thorough explanations of relevant academic experiences.")
+
+class ProjectResult(BaseModel):
+    recommended: list[str] = Field(description="A concise and well-balanced project description that closely aligns with the job's requirements.")
+    simplified: list[str] = Field(description="A shortened version of the project description, focusing on core achievements and technologies used.")
+    extended: list[str] = Field(description="A detailed and elaborative project description, providing thorough explanations of the project's scope, technologies, and outcomes.")
 
 
-# ********** Function summary AI to create the summary of the aplicant
-def summary_ai(summary, keywords, job_info,):
+
+# ********** Function to use premade keywords if the input is empty
+def get_premade_keywords(cv_segment):
+    if cv_segment == "summary":
+        keywords_default = "Highlight essential skills and qualities that employers frequently seek, such as leadership, problem-solving, and communication skills."
+    elif cv_segment == "work_experience":
+        keywords_default = "Focus on making the work experience descriptions concise yet comprehensive, highlighting the most critical aspects of the applicant's role and achievements."
+    elif cv_segment == "education":
+        keywords_default = "Mention degrees, certifications, and relevant coursework, focusing on academic achievements and any special honors."
+    elif cv_segment == "skills":
+        keywords_default = "List both hard and soft skills relevant to the job, such as technical expertise, proficiency in software, and interpersonal skills."
+    elif cv_segment == "projects":
+        keywords_default = "Describe significant projects, emphasizing your role, the technologies used, and the impact or results of the projects."
+    else:
+        keywords_default = ""
+    return keywords_default
+
+
+# ********** Function summary AI to create the summary of the applicant
+def summary_ai(summary, keywords, job_info):
     """
     Generates a summary description based on keywords and job information.
 
@@ -52,21 +84,23 @@ def summary_ai(summary, keywords, job_info,):
     Returns:
         dict: Dictionary containing the generated summary, tokens used for input and output.
     """
+    
 
     summary_template = """
-    You are an expert in creating first-person view resume summaries for curriculum vitae. Please generate an upgraded and more detailed summary description for curriculum vitae based on the provided INPUT.
+    You are an expert in creating first-person view resume summaries. Please generate a summary description based on the provided INPUT.
 
     INPUT:
     "summary": {summary}
     "keywords": {keywords}
     "job_info": {job_info}
 
-    Based on the "summary" and "keywords", create an upgraded and more detailed summary description tailored to "job_info" while highlighting my competency that suits to the "job_info" for curriculum vitae section following the language used in the "keywords".
+    Based on the "summary", "keywords" and "job_info", create a summary description section following the language used in the "keywords".
+
 
     Create a new JSON object with the summary tailored to the "job_info" in the following JSON format:
     {format_instructions}
 
-    NOTE: Ensure the upgraded and more detailed summary is written in the same language as the input "keywords".
+    NOTE: Ensure the summary is written in the same language as the input "keywords".
     """
 
     # ********** Initialize parser and prompt template for AI response handling
@@ -137,6 +171,7 @@ def work_experience_ai(work_experience, keywords, job_info):
     Returns:
         dict: Dictionary containing the generated work experience description, tokens used for input and output.
     """
+    
     work_experience_template = """
     You are an expert in creating resume descriptions. Please generate a work experience description based on the provided INPUT.
 
@@ -154,7 +189,7 @@ def work_experience_ai(work_experience, keywords, job_info):
     NOTE: Do not use any personal pronouns or mention the name of the applicant.
     """
     # ********** Initialize parser and prompt template for AI response handling
-    work_experience_parser = JsonOutputParser(pydantic_object=DescriptionGenerator)
+    work_experience_parser = JsonOutputParser(pydantic_object=WorkExpereienceResult)
     work_experience_prompt = PromptTemplate(
         template=work_experience_template,
         input_variables=[
@@ -222,14 +257,14 @@ def education_ai(education, keywords, job_info):
     """
 
     education_template = """
-    You are an expert in creating resume descriptions. Please generate a education description based on the provided INPUT.
+    You are an expert in creating resume descriptions. Please generate an education description based on the provided INPUT.
 
     INPUT:
     "education": {education}
     "keywords": {keywords}
     "job_info": {job_info}
 
-    Based on the "education", "keywords", and "job_info", create a education description section following the language used in the "keywords".
+    Based on the "education", "keywords", and "job_info", create an education description section following the language used in the "keywords".
 
     Create a new JSON object with the education tailored to the "job_info" in the following JSON format:
     {format_instructions}
@@ -239,7 +274,7 @@ def education_ai(education, keywords, job_info):
     """
     
     # ********** Initialize parser and prompt template for AI response handling
-    education_ai_parser = JsonOutputParser(pydantic_object=DescriptionGenerator)
+    education_ai_parser = JsonOutputParser(pydantic_object=EducationResult)
     education_prompt = PromptTemplate(
             template=education_template,
             input_variables=[
@@ -323,12 +358,12 @@ def project_ai(project, keywords, job_info):
     """
     
     # ********** Initialize parser and prompt template for AI response handling
-    parser = JsonOutputParser(pydantic_object=DescriptionGenerator)
+    parser = JsonOutputParser(pydantic_object=ProjectResult)
     project_prompt = PromptTemplate(
         template=project_template,
         input_variables=[
             "project",
-            "keywords" 
+            "keywords",
             "job_info"],
         partial_variables={"format_instructions": parser.get_format_instructions()},
     )
@@ -442,7 +477,6 @@ def skills_ai(skills, cv_description, keywords, job_info):
         token_in = cb.prompt_tokens
         token_out = cb.completion_tokens
         print(cb)
-        print(response)
 
     validate_description_response(response)
 
@@ -480,6 +514,9 @@ def cv_editor(cv_segment, cv_data_segment, keywords, job_info, cv_description):
     check_missing_keys(cv_data_segment, cv_segment)
     check_missing_values(cv_data_segment, cv_segment)
     check_incorrect_datatypes(cv_data_segment, cv_segment)  
+    
+    if keywords is None or keywords is "":
+        keywords = get_premade_keywords(cv_segment)
      
     
     if cv_segment == 'summary':
@@ -773,7 +810,6 @@ def create_cv_skills_ai(skills, cv_description, keywords):
         token_in = cb.prompt_tokens
         token_out = cb.completion_tokens
         print(cb)
-        print(response)
 
     # ********** Structuring the output
     result = {

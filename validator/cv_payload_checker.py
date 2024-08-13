@@ -14,10 +14,10 @@ def is_url(
         r'(/\S*)?$',
         re.IGNORECASE
     )
-    # url_match = re.match(url_pattern, text) is not None
+    url_match = re.match(url_pattern, text) is not None
 
-    # if not url_match:
-    #     raise ValueError(f"Expected an URL input, got {text}")
+    if not url_match:
+        raise ValueError(f"Expected an URL input, got {text}")
 
 def validate_response(response: Dict[str, Any], expected_format: Dict[str, Any]) -> bool:
     """

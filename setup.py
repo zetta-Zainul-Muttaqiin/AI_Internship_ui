@@ -24,6 +24,7 @@ ASTRADB_COLLECTION_NAME= api_key["ASTRADB_COLLECTION_NAME"]
 ASTRADB_TOKEN_KEY= api_key["ASTRADB_TOKEN_KEY"]
 
 # ********* Global Variables
+# ********* Global Variables
 OUTPUT_CV_EXTRACT = {
     "summary": {
         "name": "CV owner name",
@@ -37,7 +38,7 @@ OUTPUT_CV_EXTRACT = {
         "company_name": "company name cv owner worked",
         "job_title": "string of job position",
         "date": "start and end of MONTH and YEAR",
-        "description": ["an array of work experience description"]
+        "description": []
         }
     ],
     "education":[
@@ -46,14 +47,14 @@ OUTPUT_CV_EXTRACT = {
         "date": "start and end of MONTH and YEAR",
         "degree_major": "degree major of especially in university",
         "score": "final score or evaluate point in university",
-        "description": ["an array of education description"]
+        "description": []
         }
     ],
     "project": [
         {
         "project_name": "the project name",
         "date": "start and end of MONTH and YEAR",
-        "description": ["an array of project description"]
+        "description": []
         }
     ],
     "skills": []
@@ -298,6 +299,9 @@ predefined_cvs = {
         ]
     }
 }
+
+REGEX_NUMBER = r"(\d+\.?\d*)\s*([KM])"
+JSONL_PATH = 'data/jsonbatch.jsonl'
 
 LOGGER.info("Setup Done")
 
