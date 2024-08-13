@@ -1,5 +1,11 @@
 # *************** Import Helper ***************
 from helpers.astradb_connect_helper import get_astradb_collection, get_astradb_description
+from geopy.geocoders import Nominatim, options, ArcGIS
+from haversine import haversine
+import pandas as pd
+import ast
+
+geoLocator = Nominatim(user_agent="oneDetail")
 
 def search_simillar_job(query, search_filter):
     """
@@ -79,7 +85,7 @@ def set_sending_data(table, table_v2):
             "job_category": document['job_category'],
             "education_level": document['standardized_level'],
             "job_contract": document['job_contract'],
-            "description": document['summary'],
+            "description": document['summary']
             }
         job_list.append(data_field) # ****** Add the formatted job data to the list ******
     
@@ -96,6 +102,7 @@ def set_sending_data(table, table_v2):
                 "education_level": document_v2['standardized_level'],
                 "job_contract": document_v2['job_contract'],
                 "description": document_v2['summary'],
+                "location_detail": document_v2['location_detail']
                 }
             job_list_v2.append(data_field) # ****** Add the formatted job data to the list ******
 
@@ -164,8 +171,53 @@ def run_vector_search(query):
         "data": list_filter,
         "data_recommend": list_recommend
     }
-
     return result
+
+def calculate_distance(location_name, df):
+    
+    # Function to get coordinates from a location name
+    def get_coordinates(location_name):
+        location = geoLocator.geocode(location_name, timeout=120)
+        return (location.latitude, location.longitude) if location else (None, None)
+
+    # Function to extract coordinates from location_detail column
+    def extract_coordinates(loc_detail):
+        print("detail: ", loc_detail)
+        return ast.literal_eval(loc_detail)[0]  # Convert string to list and get the first item
+
+    # Function to calculate distance using Haversine formula
+    def haversine_distance(coord1, coord2):
+        return haversine(coord1, coord2)
+
+    def get_category(distance):
+        if distance == 0:
+            return 'Exact Location'
+        elif distance < 10:
+            return 'Within a radius of 10 km'
+        elif distance < 25:
+            return 'Within a radius of 25 km'
+        elif distance < 50:
+            return 'Within a radius of 50 km'
+        elif distance < 75:
+            return 'Within a radius of 75 km'
+        elif distance < 100:
+            return 'Within a radius of 100 km'
+        elif distance < 1000:
+            return 'Within a radius of 1000 km'
+        else:
+            return 'Radius more than 1000 km'
+
+    # Get input coordinates
+    input_coords = get_coordinates(location_name)
+    
+    # df['location_detail_coords'] = df['location_detail'].apply(extract_coordinates)
+    df['distance'] = df['location_detail'].apply(lambda index: haversine_distance(input_coords, index[0]))
+    df['distance_category'] = df['distance'].apply(get_category)
+
+    # Sort by distance
+    sorted_df = df.sort_values(by='distance')
+
+    return sorted_df
 
 if __name__ == "__main__":
 

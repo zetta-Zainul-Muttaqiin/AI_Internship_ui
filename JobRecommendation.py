@@ -2,7 +2,7 @@ import streamlit as st
 import os
 import pandas as pd
 from cv_upload import cv_extractor
-from job_recommend import run_vector_search
+from job_recommend import run_vector_search, calculate_distance
 from setup import (
     list_of_category,
     list_of_durations,
@@ -89,8 +89,18 @@ displayed = [
                 "Education Level", "Job Contract", "Description"
             ]
 
+location_to_display = [
+        "job_url", "job_role", "job_category", "location", "distance_category",
+        "education_level", "job_contract", "description"
+    ]
+location_displayed = [
+                "Job Role", "Job Category", "Location", "Distance",
+                "Education Level", "Job Contract", "Description"
+            ]
+
 if ('data' in st.session_state["results"]) or ('data_recommend' in st.session_state["results"]):
     # Create a DataFrame from the results
+    st.write(st.session_state["results"])
     results = st.session_state["results"]
     if results['data']:
         data = results["data"]
@@ -129,18 +139,16 @@ if ('data' in st.session_state["results"]) or ('data_recommend' in st.session_st
                     'job_role': job_role
                     }
                 st.page_link(r'pages/CV_Upload.py', label=f"Apply as {job_role}")
-
     else:
         st.text("No internships matched your keyword.")
 
-    if len(results['data']) < 5:
+    if len(results['data']) < 5 and not curr_query['location']:
         st.text(f"Just Found {len(results['data'])} Exactly Internship Offer Currently")
     
         st.write("You can check our recommendations based on your search below:")
         # Create a DataFrame from the results
         data_recom = results["data_recommend"]
         df_recom = pd.DataFrame(data_recom)
-
         valid_columns_recomm = [col for col in columns_to_display if col in df_recom.columns]
 
         if valid_columns_recomm:
@@ -173,5 +181,40 @@ if ('data' in st.session_state["results"]) or ('data_recommend' in st.session_st
                     }
                
                 st.page_link('pages/CV_Upload.py', label=f"Apply as {job_role}")
+    elif len(results['data']) < 5 and curr_query['location']:
+        data_recom = results["data_recommend"]
+        df_recom = pd.DataFrame(data_recom)
+        df_recom = calculate_distance(curr_query['location'], df_recom)
+        print("COLS2: ", df_recom.columns)
+        valid_columns_recomm = [col for col in columns_to_display if col in df_recom.columns]
 
+        if valid_columns_recomm:
+            df_display_recomm = df_recom[valid_columns_recomm]
+            
+            # Renaming columns for better readability
+            df_recom.columns = [
+                "job_url","Similarity", "Job Role", "Location", "Job Category", 
+                "Education Level", "Job Contract", "Description", "location_detail",
+                'num_distance', 'Distance'
+            ]
+               
+        # Displaying the DataFrame with select buttons
+            data_display = st.dataframe(
+                df_recom[location_displayed],
+                on_select='rerun',
+                selection_mode=["single-row"],
+                key="list_data_recomm"
+            )
+
+            if len(data_display.selection['rows']):
+                selected_row = data_display.selection['rows'][0]
+                job_role = df_display.iloc[selected_row]['Job Role']
+                job_url = df_display.iloc[selected_row]['job_url']
+
+                st.write("Selected data: ", len(data_display.selection['rows']))
+                st.session_state["job_info"] = {
+                    'job_url': job_url,
+                    'job_role': job_role
+                    }
+                st.page_link(r'pages/CV_Upload.py', label=f"Apply as {job_role}")
 # st.write(st.session_state)
