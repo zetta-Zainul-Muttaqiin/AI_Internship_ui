@@ -24,9 +24,6 @@ from models.lingua import LinguaModel
 from helpers.read_url_helper import request_url
 
 # *************** IMPORT VALIDATOR ***************
-from helpers.read_url_helper import request_url
-
-# *************** IMPORT VALIDATOR ***************
 from validator.cv_payload_checker import (
     validate_response,
     is_url,
@@ -66,7 +63,7 @@ class ExtractorResume(BaseModel):
         "description": "describe what is project doing and the goal"
         }]
       )
-    skills: list = Field(description="list of professional-matter skills (not hobby, not interest) and language mentioned at cv in array format")
+    skills: list = Field(description="list of skills mentions at cv in array format")
 
 # ********** Function for build Chain based: prompt, parser, llm
 def llm_base_cv_extractor(parser, llm):
@@ -112,7 +109,6 @@ def llm_base_cv_extractor(parser, llm):
 
 # ********** Function for generate extraction of cv with Chain LLM
 def extract_cv_llm(chain, cv_content, language):
-
     """
     Function to extract CV content using the provided chain.
 
@@ -145,29 +141,27 @@ def pdf_to_text(pdf_bytes):
     try:
 
         # ***** set a temporary file for the pdf bytes
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
-            temp_pdf.write(pdf_bytes)
-            temp_pdf_path = temp_pdf.name
+        # with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
+        #     temp_pdf.write(pdf_bytes)
+        #     temp_pdf_path = temp_pdf.name
     
-        args = ['pdftotext', '-layout', temp_pdf_path, '-']
+        args = ['pdftotext', '-layout', pdf_bytes, '-']
         cp = sp.run(
         args, 
         stdout=sp.PIPE, 
         stderr=sp.PIPE,
         check=True,
         encoding='utf-8', 
-
         text=True
         )
 
         pdf = cp.stdout
-
     except Exception as er_pdf:
         print("An error occurred while converting PDF to text:", str(er_pdf))
     
     # ***** delete the temporary file    
-    finally:
-        os.remove(temp_pdf_path)
+    # finally:
+    #     os.remove(temp_pdf_path)
 
     # ***** join the pages after extract the text
     join_page = ""
@@ -190,13 +184,13 @@ def cv_extractor(cv_path):
             Int     : Output/generated text tokens usage after generate text with LLM
     """
     # **********  call function validate input as url
-    is_url(cv_path)
+    # is_url(cv_path)
     
     # ********* call function for read a pdf to temporary file
-    temp_pdf = request_url(cv_path)
+    # temp_pdf = request_url(cv_path)
     
     # ********** call function to convert pdf to text using pdftotext
-    context = pdf_to_text(temp_pdf)
+    context = pdf_to_text(cv_path)
     # ********** call function fpr generate chain for generate response
     extractorParser = JsonOutputParser(pydantic_object=ExtractorResume)
     cv_language = LinguaModel().lingua.detect_language_of(context).name.lower()
