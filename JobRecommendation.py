@@ -100,7 +100,7 @@ location_displayed = [
 
 if ('data' in st.session_state["results"]) or ('data_recommend' in st.session_state["results"]):
     # Create a DataFrame from the results
-    st.write(st.session_state["results"])
+    # st.write(st.session_state["results"])
     results = st.session_state["results"]
     if results['data']:
         data = results["data"]
@@ -200,16 +200,16 @@ if ('data' in st.session_state["results"]) or ('data_recommend' in st.session_st
                
         # Displaying the DataFrame with select buttons
             data_display = st.dataframe(
-                df_recom[location_displayed],
+                df_display_recomm[location_displayed],
                 on_select='rerun',
                 selection_mode=["single-row"],
                 key="list_data_recomm"
             )
 
             if len(data_display.selection['rows']):
-                selected_row = data_display.selection['rows'][0]
-                job_role = df_display.iloc[selected_row]['Job Role']
-                job_url = df_display.iloc[selected_row]['job_url']
+                selected_row = df_display_recomm.selection['rows'][0]
+                job_role = df_display_recomm.iloc[selected_row]['Job Role']
+                job_url = df_display_recomm.iloc[selected_row]['job_url']
 
                 st.write("Selected data: ", len(data_display.selection['rows']))
                 st.session_state["job_info"] = {

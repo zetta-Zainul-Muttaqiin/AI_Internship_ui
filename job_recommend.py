@@ -202,6 +202,12 @@ def calculate_distance(location_name, df):
             return 'Within a radius of 75 km'
         elif distance < 100:
             return 'Within a radius of 100 km'
+        elif distance < 250:
+            return 'Within a radius of 250 km'
+        elif distance < 500:
+            return 'Within a radius of 500 km'
+        elif distance < 750:
+            return 'Within a radius of 750 km'
         elif distance < 1000:
             return 'Within a radius of 1000 km'
         else:
