@@ -186,16 +186,16 @@ if ('data' in st.session_state["results"]) or ('data_recommend' in st.session_st
         df_recom = pd.DataFrame(data_recom)
         df_recom = calculate_distance(curr_query['location'], df_recom)
         print("COLS2: ", df_recom.columns)
-        valid_columns_recomm = [col for col in columns_to_display if col in df_recom.columns]
+        valid_columns_recomm = [col for col in location_to_display if col in df_recom.columns]
 
         if valid_columns_recomm:
             df_display_recomm = df_recom[valid_columns_recomm]
             
             # Renaming columns for better readability
-            df_recom.columns = [
-                "job_url","Similarity", "Job Role", "Location", "Job Category", 
-                "Education Level", "Job Contract", "Description", "location_detail",
-                'num_distance', 'Distance'
+            print("Cols3", df_display_recomm.columns)
+            df_display_recomm.columns = [
+                'job_url', 'Job Role', 'Job Category', 'Location', 'Distance',
+                'Education Level', 'Job Contract', 'Description'
             ]
                
         # Displaying the DataFrame with select buttons
@@ -207,7 +207,7 @@ if ('data' in st.session_state["results"]) or ('data_recommend' in st.session_st
             )
 
             if len(data_display.selection['rows']):
-                selected_row = df_display_recomm.selection['rows'][0]
+                selected_row = data_display.selection['rows'][0]
                 job_role = df_display_recomm.iloc[selected_row]['Job Role']
                 job_url = df_display_recomm.iloc[selected_row]['job_url']
 
