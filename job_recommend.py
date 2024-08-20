@@ -222,6 +222,7 @@ def calculate_distance(location_name, df):
 
     # Sort by distance
     sorted_df = df.sort_values(by='distance')
+    sorted_df.reset_index(drop=True, inplace=True)
 
     return sorted_df
 
